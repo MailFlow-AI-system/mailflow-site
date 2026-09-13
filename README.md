@@ -114,7 +114,7 @@ keeps ownership of interactivity explicit.
 
 ## CI
 
-The `CI Required` workflow runs for pull requests and pushes targeting
+The `CI Required` workflow runs for pull requests targeting and pushes to
 `development`, `staging`, or `main`. It uses Ubuntu 24.04, verifies the pinned
 Node.js and Bun versions, installs with `bun install --frozen-lockfile`, runs
 `bun run check`, installs Chromium, and runs `bun run test:e2e` with
