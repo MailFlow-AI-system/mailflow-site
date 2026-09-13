@@ -9,17 +9,33 @@ and one public foundation-status slice.
 
 - Node.js `24.20.0`
 - Bun `1.4.1`
+- Infisical CLI
+- Access to the `MailFlow-AI` project in Infisical
 
 The expected Node.js version is recorded in `.node-version`; the Bun version is
 recorded in `package.json`.
 
 ## Local setup
 
-Install the locked dependencies, create local environment configuration, and
-start the development server:
+Install the locked dependencies:
 
 ```bash
 bun install --frozen-lockfile
+```
+
+Authenticate the Infisical CLI:
+
+```bash
+infisical login
+```
+
+The committed `.infisical.json` links this repository to `MailFlow-AI`. Development commands read
+the `dev` environment and `/mailflow-site` secret path. Run `infisical init` only when the checkout
+must be linked to a different project.
+
+Create the local public configuration and start the development server:
+
+```bash
 cp .env.example .env
 bun run dev
 ```
@@ -30,7 +46,7 @@ The site is available at `http://127.0.0.1:4321`.
 
 | Command | Purpose |
 | --- | --- |
-| `bun run dev` | Start the Astro development server |
+| `bun run dev` | Start Astro with the Infisical `dev` environment |
 | `bun run build` | Build the static site into `dist/` |
 | `bun run preview` | Preview the production build locally |
 | `bun run lint` | Run Biome lint checks |
@@ -51,6 +67,10 @@ bunx playwright install --with-deps chromium
 ```
 
 ## Environment and security
+
+Infisical is the secret-delivery boundary for local development. The `/mailflow-site` path currently
+contains no secrets; add future secrets there instead of committing them or writing them to `.env`.
+The `.infisical.json` file contains project-link metadata only and is safe to commit.
 
 `SITE_URL` is required public site configuration used to build canonical URLs.
 Its local value is documented in `.env.example`; `.env` is ignored and must not
@@ -118,7 +138,8 @@ The `CI Required` workflow runs for every pull request. It uses Ubuntu 24.04,
 verifies the pinned Node.js and Bun versions, installs with
 `bun install --frozen-lockfile`, runs `bun run check`, installs Chromium, and
 runs `bun run test:e2e` with `SITE_URL=https://mailflow.example.test`.
-Superseded pull-request runs are cancelled. CI does not deploy or use secrets.
+Superseded pull-request runs are cancelled. CI does not authenticate with
+Infisical, deploy, or use secrets.
 
 ## Initialization boundary
 
