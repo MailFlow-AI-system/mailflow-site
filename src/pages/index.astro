@@ -1,17 +1,8 @@
 ---
-import '../styles/global.css'
+import FoundationStatus from '@/features/home/components/FoundationStatus'
+import SiteLayout from '@/layouts/SiteLayout.astro'
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width">
-    <meta name="generator" content={Astro.generator}>
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1>Astro</h1>
-  </body>
-</html>
+<SiteLayout>
+  <FoundationStatus />
+</SiteLayout>
