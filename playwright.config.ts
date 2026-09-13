@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'line' : 'html',
   use: {
-    baseURL: 'http://[::1]:4321',
+    baseURL: 'http://[::1]:4328',
     trace: 'on-first-retry',
   },
   projects: [
@@ -17,12 +17,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'bun run dev -- --host ::1 --port 4321',
+    command: 'bun run astro -- dev --host ::1 --port 4328',
     env: {
       ASTRO_DEV_BACKGROUND: '0',
       SITE_URL: 'https://mailflow.example.test',
     },
-    url: 'http://[::1]:4321',
+    url: 'http://[::1]:4328',
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,
   },
