@@ -52,10 +52,10 @@ bunx playwright install --with-deps chromium
 
 ## Environment and security
 
-`SITE_URL` is public site configuration used to build canonical URLs. Local
-defaults are documented in `.env.example`; `.env` is ignored and must not be
-committed. Never place passwords, API keys, tokens, or other secrets in public
-environment variables, source files, fixtures, browser tests, or logs.
+`SITE_URL` is required public site configuration used to build canonical URLs.
+Its local value is documented in `.env.example`; `.env` is ignored and must not
+be committed. Never place passwords, API keys, tokens, or other secrets in
+public environment variables, source files, fixtures, browser tests, or logs.
 
 ## Architecture
 
@@ -114,12 +114,11 @@ keeps ownership of interactivity explicit.
 
 ## CI
 
-The `CI Required` workflow runs for every pull request and for pushes to `development`, `staging`,
-or `main`. It uses Ubuntu 24.04, verifies the pinned
-Node.js and Bun versions, installs with `bun install --frozen-lockfile`, runs
-`bun run check`, installs Chromium, and runs `bun run test:e2e` with
-`SITE_URL=https://mailflow.example.test`. Superseded pull-request runs are
-cancelled. CI does not deploy or use secrets.
+The `CI Required` workflow runs for every pull request. It uses Ubuntu 24.04,
+verifies the pinned Node.js and Bun versions, installs with
+`bun install --frozen-lockfile`, runs `bun run check`, installs Chromium, and
+runs `bun run test:e2e` with `SITE_URL=https://mailflow.example.test`.
+Superseded pull-request runs are cancelled. CI does not deploy or use secrets.
 
 ## Initialization boundary
 
