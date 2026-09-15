@@ -13,7 +13,6 @@ export default defineConfig({
         context: 'server',
         access: 'public',
         url: true,
-        default: 'http://localhost:4321',
       }),
     },
   },
