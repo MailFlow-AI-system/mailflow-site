@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^6.0.5",
+    "@mailflow/ui": "git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#710545185e63c125ee634d3d557ec816851f81ca",
     "astro": "^7.3.2",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
