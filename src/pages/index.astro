@@ -1,8 +1,10 @@
 ---
 import FoundationStatus from '@/features/home/components/FoundationStatus'
+import ThemeSelector from '@/features/home/components/ThemeSelector'
 import SiteLayout from '@/layouts/SiteLayout.astro'
 ---
 
 <SiteLayout>
+  <ThemeSelector client:load />
   <FoundationStatus />
 </SiteLayout>

@@ -86,13 +86,15 @@ shared code stays capability-neutral.
 ```text
 .
 ├── e2e/
+│   ├── design-system.spec.ts
 │   └── foundation.spec.ts
 ├── src/
 │   ├── features/
 │   │   └── home/
 │   │       └── components/
 │   │           ├── FoundationStatus.test.tsx
-│   │           └── FoundationStatus.tsx
+│   │           ├── FoundationStatus.tsx
+│   │           └── ThemeSelector.tsx
 │   ├── layouts/
 │   │   └── SiteLayout.astro
 │   ├── pages/
@@ -120,7 +122,8 @@ Ownership rules:
   primitives. It must not become a dumping ground for feature-specific logic.
 - `src/layouts/` owns the document shell, metadata, canonical URL, and slots.
   Layouts do not own landing-page content.
-- `src/styles/` owns global imports, resets, and site-wide tokens. Keep
+- `src/styles/` owns global style imports and design-system integration. Shared tokens belong to
+  `@mailflow/ui`. Keep
   feature-specific styling close to its feature when it does not belong to the
   global layer.
 - `src/test/` owns shared test setup only. Colocated component tests verify
@@ -131,6 +134,39 @@ Astro renders components without client JavaScript by default. Add the smallest
 appropriate React `client:*` directive only when a component needs browser
 interactivity; do not hydrate static content. This keeps public pages fast and
 keeps ownership of interactivity explicit.
+
+## Shared design system
+
+The site consumes `@mailflow/ui` from the separate MailFlow design-system repository. Consumer
+branches pin a reviewed full Git commit SHA; the temporary local tarball used during coordinated
+development is not a release dependency. Keep the manifest and `bun.lock` aligned when updating
+the pin. The current coordinated review source is
+[`@mailflow/ui` PR #1](https://github.com/MailFlow-AI-system/mailflow-design-system/pull/1) at
+`b418c12228a125a7be29095dd2f941857528a203`.
+
+Import shared components and icons from their public subpaths:
+
+```tsx
+import { Button } from '@mailflow/ui/button'
+import { Label } from '@mailflow/ui/label'
+import { ArrowRight } from '@mailflow/ui/icons'
+```
+
+```bash
+bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#b418c12228a125a7be29095dd2f941857528a203'
+```
+
+`src/styles/global.css` imports Tailwind once and then `@mailflow/ui/styles.css`. This makes the
+shared color, typography, spacing, radius, shadow, motion, and Inter font tokens available to Astro
+pages while leaving page layout ownership in this repository. `astro.config.mjs` compiles the
+package source through Vite SSR with `ssr.noExternal`.
+
+`SiteLayout.astro` injects the exported `themeScript` inline in the document head. The server
+renders the dark fallback, and the script applies the stored light, dark, or system preference
+before first paint. Only `ThemeSelector.tsx` is hydrated with `client:load`; static Button and Label
+usage stays server-rendered. The native email input demonstrates Label association without adding
+an application-owned Input component. Font and component notices are available at
+`/third-party-notices.txt`.
 
 ## CI
 
@@ -146,3 +182,13 @@ Infisical, deploy, or use secrets.
 Real landing-page content, signup and API integration, deployment, and an SSR
 adapter are outside this initialization. Add each only through an approved
 feature or platform decision.
+
+## Listening
+
+The site uses the standalone `@mailflow/ui` package instead of copying components or tokens into
+the Astro repository. Tailwind remains application-owned, while the package provides its mappings
+and source scan through the shared stylesheet. Static Astro rendering keeps the foundation page
+free of unnecessary hydration; the theme selector is the only interactive island required by this
+slice. The package is pinned to the coordinated design-system feature commit for review. After
+that pull request merges, update the pin to the accepted `development` commit before merging this
+consumer pull request.
