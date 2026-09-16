@@ -1,4 +1,3 @@
-import { Label } from '@mailflow/ui/label'
 import { type Theme, ThemeProvider, useTheme } from '@mailflow/ui/theme'
 
 const themeOptions: Array<{ value: Theme; label: string }> = [
@@ -13,7 +12,9 @@ function ThemeSelect() {
   return (
     <div className="border-b bg-background px-8 py-4 text-foreground">
       <div className="mx-auto flex max-w-2xl items-center justify-end gap-2 text-sm">
-        <Label htmlFor="theme">Theme</Label>
+        <label className="text-sm font-medium" htmlFor="theme">
+          Theme
+        </label>
         <select
           id="theme"
           value={theme}

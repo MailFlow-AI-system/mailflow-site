@@ -69,7 +69,8 @@ test.describe('shared design system foundation', () => {
     const button = page.getByRole('button', { name: 'Primary action' })
     await expect(button).toBeVisible()
     await expect(button).toHaveAttribute('data-slot', 'button')
-    await expect(page.locator('label[for="email"]')).toHaveAttribute('data-slot', 'label')
+    await page.locator('label[for="email"]').click()
+    await expect(page.getByLabel('Email address')).toBeFocused()
     expect(consoleErrors, consoleErrors.join('\n')).toEqual([])
   })
 

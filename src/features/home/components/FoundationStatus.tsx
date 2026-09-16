@@ -1,6 +1,5 @@
 import { Button } from '@mailflow/ui/button'
 import { ArrowRight } from '@mailflow/ui/icons'
-import { Label } from '@mailflow/ui/label'
 
 export default function FoundationStatus() {
   return (
@@ -21,13 +20,14 @@ export default function FoundationStatus() {
             Shared design system
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Buttons, labels, typography, and theme tokens are provided by the shared MailFlow UI
-            package.
+            Buttons, typography, and theme tokens are provided by the shared MailFlow UI package.
           </p>
 
           <form className="mt-6 flex max-w-md flex-col gap-4">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="email">Email address</Label>
+              <label className="text-sm font-medium" htmlFor="email">
+                Email address
+              </label>
               <input
                 id="email"
                 type="email"

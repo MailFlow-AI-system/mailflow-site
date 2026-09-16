@@ -12,7 +12,7 @@ and one public foundation-status slice.
 - Infisical CLI
 - Access to the `MailFlow-AI` project in Infisical
 
-The expected Node.js version is recorded in `.node-version`; the Bun version is
+The expected Node.js version is pinned in `.github/workflows/ci.yml`; the Bun version is
 recorded in `package.json`.
 
 ## Local setup
@@ -142,18 +142,17 @@ branches pin a reviewed full Git commit SHA; the temporary local tarball used du
 development is not a release dependency. Keep the manifest and `bun.lock` aligned when updating
 the pin. The current coordinated review source is
 [`@mailflow/ui` PR #1](https://github.com/MailFlow-AI-system/mailflow-design-system/pull/1) at
-`b418c12228a125a7be29095dd2f941857528a203`.
+`710545185e63c125ee634d3d557ec816851f81ca`.
 
 Import shared components and icons from their public subpaths:
 
 ```tsx
 import { Button } from '@mailflow/ui/button'
-import { Label } from '@mailflow/ui/label'
 import { ArrowRight } from '@mailflow/ui/icons'
 ```
 
 ```bash
-bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#b418c12228a125a7be29095dd2f941857528a203'
+bun add '@mailflow/ui@git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#710545185e63c125ee634d3d557ec816851f81ca'
 ```
 
 `src/styles/global.css` imports Tailwind once and then `@mailflow/ui/styles.css`. This makes the
@@ -163,8 +162,8 @@ package source through Vite SSR with `ssr.noExternal`.
 
 `SiteLayout.astro` injects the exported `themeScript` inline in the document head. The server
 renders the dark fallback, and the script applies the stored light, dark, or system preference
-before first paint. Only `ThemeSelector.tsx` is hydrated with `client:load`; static Button and Label
-usage stays server-rendered. The native email input demonstrates Label association without adding
+before first paint. Only `ThemeSelector.tsx` is hydrated with `client:load`; static Button
+usage stays server-rendered. The native email input uses an HTML label without adding
 an application-owned Input component. Font and component notices are available at
 `/third-party-notices.txt`.
 
