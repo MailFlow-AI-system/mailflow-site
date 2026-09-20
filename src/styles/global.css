@@ -1,1 +1,14 @@
 @import 'tailwindcss';
+@import '@mailflow/ui/styles.css';
+
+@layer utilities {
+  .shadow-xl {
+    --tw-shadow:
+      0 20px 25px -5px var(--tw-shadow-color, #0000001a),
+      0 8px 10px -6px var(--tw-shadow-color, #0000001a);
+  }
+
+  .shadow-2xl {
+    --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, #00000040);
+  }
+}

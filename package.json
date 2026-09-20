@@ -24,8 +24,11 @@
     "check:deploy": "wrangler deploy --dry-run --env development && wrangler deploy --dry-run --env staging && wrangler deploy --dry-run --env production"
   },
   "dependencies": {
+    "@base-ui/react": "1.8.0",
     "@astrojs/react": "^6.0.5",
+    "@mailflow/ui": "git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#2e87eb66dd9019333ab5e3aade4042ced3876fd2",
     "astro": "^7.3.2",
+    "cn": "0.2.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
@@ -34,6 +37,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@axe-core/playwright": "4.13.0",
     "@biomejs/biome": "^2.5.13",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.3.3",
