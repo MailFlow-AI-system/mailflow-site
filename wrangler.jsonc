@@ -5,7 +5,14 @@
     "directory": "./dist"
   },
   "env": {
-    "development": {},
-    "staging": {}
+    "development": {
+      "name": "mailflow-site-development"
+    },
+    "staging": {
+      "name": "mailflow-site-staging"
+    },
+    "production": {
+      "name": "mailflow-site-production"
+    }
   }
 }
