@@ -1,5 +1,7 @@
 ---
 import { Check } from '@mailflow/ui/icons'
+
+import { aiAssistantBenefits } from '../constants/aiAssistantBenefits'
 ---
 
 <section id="ai-assistant" class="px-4 py-24 md:px-6">
@@ -50,30 +52,14 @@ import { Check } from '@mailflow/ui/icons'
       </p>
 
       <ul class="mt-6 space-y-3">
-        <li class="flex items-center gap-3 text-sm">
-          <div class="flex size-5 items-center justify-center rounded-full bg-primary/15">
-            <Check aria-hidden="true" className="size-3 text-primary" />
-          </div>
-          Automatic summaries of long threads
-        </li>
-        <li class="flex items-center gap-3 text-sm">
-          <div class="flex size-5 items-center justify-center rounded-full bg-primary/15">
-            <Check aria-hidden="true" className="size-3 text-primary" />
-          </div>
-          Context-aware reply suggestions
-        </li>
-        <li class="flex items-center gap-3 text-sm">
-          <div class="flex size-5 items-center justify-center rounded-full bg-primary/15">
-            <Check aria-hidden="true" className="size-3 text-primary" />
-          </div>
-          Data-driven campaign generation
-        </li>
-        <li class="flex items-center gap-3 text-sm">
-          <div class="flex size-5 items-center justify-center rounded-full bg-primary/15">
-            <Check aria-hidden="true" className="size-3 text-primary" />
-          </div>
-          Predictive churn and engagement insights
-        </li>
+        {aiAssistantBenefits.map((benefit) => (
+            <li class="flex items-center gap-3 text-sm">
+              <div class="flex size-5 items-center justify-center rounded-full bg-primary/15">
+                <Check aria-hidden="true" className="size-3 text-primary" />
+              </div>
+              {benefit}
+            </li>
+          ))}
       </ul>
     </div>
   </div>

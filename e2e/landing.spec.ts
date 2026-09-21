@@ -1,33 +1,8 @@
 import { expect, type Locator, type Page, test } from '@playwright/test'
 
-const internalAnchors = [
-  ['Features', '#features'],
-  ['How it works', '#how-it-works'],
-  ['Pricing', '#pricing'],
-  ['FAQ', '#faq'],
-] as const
-
-const faqItems = [
-  {
-    question: 'Do I need to switch my current email provider?',
-    answer:
-      'No. You connect your existing Gmail, Outlook, or SMTP accounts and manage everything inside MailFlow AI.',
-  },
-  {
-    question: 'Does AI cost extra?',
-    answer:
-      'The AI assistant is included in the Pro and Enterprise plans. On Starter, you get a generous monthly usage allowance.',
-  },
-  {
-    question: 'Can I import my contact lists?',
-    answer:
-      'Yes. Import via CSV, API, or direct integrations. MailFlow AI automatically detects fields and duplicates.',
-  },
-  {
-    question: 'Is there a long-term contract?',
-    answer: 'No. You can cancel or change plans at any time, with no cancellation fees.',
-  },
-] as const
+import { faqItems } from '../src/features/home/constants/faqItems'
+import { navigationLinks } from '../src/features/home/constants/navigationLinks'
+import { testimonials } from '../src/features/home/constants/testimonials'
 
 async function waitForHydration(page: Page) {
   await expect(page.locator('astro-island')).toHaveCount(2)
@@ -71,7 +46,7 @@ test('navigation links resolve to each internal section', async ({ page }) => {
   await page.goto('/')
   await waitForHydration(page)
 
-  for (const [label, href] of internalAnchors) {
+  for (const { href, label } of navigationLinks) {
     const isMobile = test.info().project.name === 'Mobile Chrome'
     if (isMobile) {
       await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
@@ -170,6 +145,9 @@ test('renders and toggles all FAQ questions and answers', async ({ page }) => {
     await trigger.click()
     await expect(trigger).toHaveAttribute('aria-expanded', 'true')
     await expect(panel).toBeVisible()
+    if (typeof item.answer !== 'string') {
+      throw new Error(`FAQ item "${item.question}" is missing an answer`)
+    }
     await expect(panel).toContainText(item.answer)
 
     await trigger.click()
@@ -182,11 +160,11 @@ test('renders three testimonial groups with five-star ratings', async ({ page })
   await page.goto('/')
   await waitForHydration(page)
 
-  const testimonials = page.locator('#testimonials figure')
-  await expect(testimonials).toHaveCount(3)
+  const testimonialCards = page.locator('#testimonials figure')
+  await expect(testimonialCards).toHaveCount(testimonials.length)
 
-  for (let index = 0; index < 3; index += 1) {
-    const rating = testimonials.nth(index).getByRole('img', { name: '5 out of 5 stars' })
+  for (let index = 0; index < testimonials.length; index += 1) {
+    const rating = testimonialCards.nth(index).getByRole('img', { name: '5 out of 5 stars' })
     await expect(rating).toBeVisible()
     await expect(rating.locator('[aria-hidden="true"]')).toHaveCount(5)
   }
