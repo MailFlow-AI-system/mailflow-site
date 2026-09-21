@@ -58,9 +58,7 @@ The site is available at `http://127.0.0.1:4321`.
 | `bun run test:watch` | Run Vitest in watch mode |
 | `bun run test:e2e` | Run the Chromium Playwright smoke test |
 | `bun run check` | Run lint, format, typecheck, unit tests, and build |
-| `bun run deploy:development` | Build and deploy the `mailflow-site-development` Worker |
-| `bun run deploy:staging` | Build and deploy the `mailflow-site-staging` Worker |
-| `bun run deploy:production` | Build and deploy the `mailflow-site-production` Worker |
+| `bun run deploy` | Build and deploy the Worker named by `CLOUDFLARE_ENV` (`development`, `staging`, or `production`) |
 
 Install the local Chromium browser and Linux dependencies before the first E2E
 run when needed:
@@ -164,8 +162,9 @@ environment so canonical URLs match the deployed Worker. Cloudflare deploy
 credentials are `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` on the
 protected GitHub environments `development`, `staging`, and `production`.
 
-Local deploy commands need `SITE_URL` and Cloudflare credentials in the process
-environment. CI remains the merge gate; CD does not re-run Playwright.
+Local deploy commands need `SITE_URL`, `CLOUDFLARE_ENV`, and Cloudflare
+credentials in the process environment. CI remains the merge gate; CD does not
+re-run Playwright.
 
 ## Initialization boundary
 
