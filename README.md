@@ -86,7 +86,7 @@ existing Workers:
 
 - `wrangler deploy --env development` targets `mailflow-site-development`.
 - `wrangler deploy --env staging` targets `mailflow-site-staging`.
-- `wrangler deploy --env production` targets `mailflow-site-production`.
+- `wrangler deploy --env production` targets `mailflow-site`.
 
 Cloudflare Workers Builds owns deployment triggers for `development`, `staging`,
 and `main`. GitHub Actions validates changes but does not deploy them. Configure
@@ -167,7 +167,7 @@ platform decision.
 - The site remains an assets-only Worker because the current Astro output is
   static. A Worker script or server adapter would add runtime complexity without
   supporting a current requirement.
-- Production uses the named `production` environment so all Workers follow the
-  same explicit environment suffix convention.
+- Production keeps the named `production` environment for explicit deploy
+  selection while using the clean `mailflow-site` Worker name.
 - Cloudflare Workers Builds owns CD. A separate GitHub deployment workflow was
   rejected to avoid duplicate deployment ownership and credentials.
