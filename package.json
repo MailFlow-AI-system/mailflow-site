@@ -21,7 +21,7 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "check": "bun run lint && bun run format:check && bun run typecheck && bun run test && bun run build && bun run check:deploy",
-    "check:deploy": "wrangler deploy --dry-run --env development && wrangler deploy --dry-run --env staging && wrangler deploy --dry-run"
+    "check:deploy": "wrangler deploy --dry-run --env development && wrangler deploy --dry-run --env staging && wrangler deploy --dry-run --env production"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.5",
