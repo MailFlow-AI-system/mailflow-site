@@ -1,7 +1,9 @@
 import { Button } from '@mailflow/ui/components'
-import { ArrowRight, Menu, Sparkles } from '@mailflow/ui/icons'
+import { ArrowRight, Menu } from '@mailflow/ui/icons'
 import { useState } from 'react'
 
+import Brand from './Brand'
+import NavigationLinks from './NavigationLinks'
 import ThemeSelector from './ThemeSelector'
 import {
   Sheet,
@@ -11,47 +13,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from './ui/sheet'
-
-const navigationItems = [
-  { href: '#features', label: 'Features' },
-  { href: '#how-it-works', label: 'How it works' },
-  { href: '#pricing', label: 'Pricing' },
-  { href: '#faq', label: 'FAQ' },
-] as const
-
-function NavigationLinks({
-  className = '',
-  onNavigate,
-}: {
-  className?: string
-  onNavigate?: () => void
-}) {
-  return (
-    <nav aria-label="Primary navigation" className={className}>
-      {navigationItems.map(({ href, label }) => (
-        <a
-          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          href={href}
-          key={href}
-          onClick={onNavigate}
-        >
-          {label}
-        </a>
-      ))}
-    </nav>
-  )
-}
-
-function Brand() {
-  return (
-    <a className="flex items-center gap-2 font-semibold tracking-tight" href="/">
-      <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-indigo-600 text-primary-foreground shadow-lg shadow-primary/20">
-        <Sparkles aria-hidden={true} className="size-4 text-primary-foreground" strokeWidth={2.5} />
-      </span>
-      <span className="text-lg">MailFlow AI</span>
-    </a>
-  )
-}
 
 export default function Header() {
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)
@@ -106,5 +67,3 @@ export default function Header() {
     </header>
   )
 }
-
-export { navigationItems }

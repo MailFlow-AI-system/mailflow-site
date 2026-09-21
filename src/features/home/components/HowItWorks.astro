@@ -1,4 +1,5 @@
 ---
+import { howItWorksSteps } from '../constants/howItWorksSteps'
 ---
 
 <section id="how-it-works" class="bg-muted/30 px-4 py-24 md:px-6">
@@ -11,29 +12,13 @@
     </div>
 
     <ol class="mt-14 grid gap-8 md:grid-cols-3">
-      <li class="relative">
-        <p class="text-5xl font-bold text-primary" aria-hidden="true">01</p>
-        <h3 class="mt-4 text-xl font-semibold text-foreground">Connect your accounts</h3>
-        <p class="mt-2 text-sm text-muted-foreground">
-          Connect email, SMTP, and contact lists in just a few clicks.
-        </p>
-      </li>
-
-      <li class="relative">
-        <p class="text-5xl font-bold text-primary" aria-hidden="true">02</p>
-        <h3 class="mt-4 text-xl font-semibold text-foreground">Create with AI</h3>
-        <p class="mt-2 text-sm text-muted-foreground">
-          Use smart templates and the assistant to produce content in seconds.
-        </p>
-      </li>
-
-      <li class="relative">
-        <p class="text-5xl font-bold text-primary" aria-hidden="true">03</p>
-        <h3 class="mt-4 text-xl font-semibold text-foreground">Automate and scale</h3>
-        <p class="mt-2 text-sm text-muted-foreground">
-          Launch personalized journeys and track growth in live dashboards.
-        </p>
-      </li>
+      {howItWorksSteps.map((step) => (
+          <li class="relative">
+            <p class="text-5xl font-bold text-primary" aria-hidden="true">{step.number}</p>
+            <h3 class="mt-4 text-xl font-semibold text-foreground">{step.title}</h3>
+            <p class="mt-2 text-sm text-muted-foreground">{step.description}</p>
+          </li>
+        ))}
     </ol>
   </div>
 </section>
