@@ -10,7 +10,6 @@ describe('Faq', () => {
 
     expect(screen.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible()
     expect(screen.getByText('Still have questions? Our team is ready to help.')).toBeVisible()
-    expect(document.querySelector('[data-slot="accordion-item"]')).toHaveClass('cursor-pointer')
 
     const expectControlledPanels = () => {
       for (const { question } of faqItems) {

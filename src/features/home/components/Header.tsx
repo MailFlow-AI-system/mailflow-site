@@ -1,18 +1,18 @@
-import { Button } from '@mailflow/ui/components'
-import { ArrowRight, Menu } from '@mailflow/ui/icons'
-import { useState } from 'react'
-
-import Brand from './Brand'
-import NavigationLinks from './NavigationLinks'
-import ThemeSelector from './ThemeSelector'
 import {
+  Button,
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from './ui/sheet'
+} from '@mailflow/ui/components'
+import { ArrowRight, Menu } from '@mailflow/ui/icons'
+import { useState } from 'react'
+
+import Brand from './Brand'
+import NavigationLinks from './NavigationLinks'
+import ThemeSelector from './ThemeSelector'
 
 export default function Header() {
   const [mobileNavigationOpen, setMobileNavigationOpen] = useState(false)

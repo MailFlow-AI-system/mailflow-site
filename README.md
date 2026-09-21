@@ -132,7 +132,6 @@ Repository layout for the landing page:
 │   │   ├── Pricing.astro
 │   │   ├── FinalCta.astro
 │   │   ├── Footer.astro
-│   │   └── ui/
 │   ├── layouts/SiteLayout.astro
 │   ├── pages/index.astro
 │   ├── shared/config/site.ts
@@ -147,7 +146,7 @@ Ownership rules:
 
 - `src/pages/` owns route entrypoints and page-level composition. Keep feature behavior in `src/features/` instead of growing route files into application modules.
 - `src/features/home/` owns landing-page sections, content presentation, and interaction composition for the home capability. Static sections stay Astro; interactive sections stay React and receive the smallest required `client:*` directive at the route boundary.
-- `src/features/home/components/ui/` owns consumer-local Base UI wrappers for the sheet, accordion, and dropdown contracts used by this page. Promote a wrapper into the shared design system only when its contract is stable across consumers.
+- Reusable interaction primitives such as the sheet, accordion, and dropdown menu come from `@mailflow/ui/components`. Keep landing-specific composition in `src/features/home/components/`.
 - `src/shared/` owns stable technical configuration and genuinely reusable primitives. It must not become a dumping ground for feature-specific logic.
 - `src/layouts/` owns the document shell, metadata, canonical URL, theme bootstrap, and slots. Layouts do not own landing-page content.
 - `src/styles/` owns global imports and site-wide styles. Keep feature-specific styling close to its feature when it does not belong in the global layer.
@@ -155,13 +154,13 @@ Ownership rules:
 
 ## Design-system integration
 
-The landing page consumes `@mailflow/ui` from design-system SHA `2e87eb66dd9019333ab5e3aade4042ced3876fd2`.
+The landing page consumes `@mailflow/ui` from design-system SHA `e95368187e345be4ba3e2a4bf4830e60cbbf491e`.
 
 - Import reusable buttons and icons from `@mailflow/ui/components` and `@mailflow/ui/icons`.
 - Import `ThemeProvider`, `useTheme`, and `Theme` from `@mailflow/ui/theme`.
 - Import the synchronous theme bootstrap from `@mailflow/ui/theme-script` in `SiteLayout.astro`.
 - Use shared semantic tokens such as `background`, `foreground`, `muted`, `border`, and `primary` rather than consumer-only color values.
-- Keep page-specific Base UI wrappers local until another MailFlow consumer requires the same behavior contract.
+- Keep reusable primitives in the design system; the site only composes them for landing-page interactions.
 
 ## Validation coverage
 
