@@ -1,5 +1,11 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@mailflow/ui/components'
+
 import { faqItems } from '../constants/faqItems'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 
 export default function Faq() {
   return (

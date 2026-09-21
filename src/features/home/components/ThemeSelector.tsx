@@ -1,16 +1,15 @@
-import { Button } from '@mailflow/ui/components'
-import { Moon, Settings, Sun } from '@mailflow/ui/icons'
-import { type Theme, ThemeProvider, useTheme } from '@mailflow/ui/theme'
-import { type ComponentType, useState } from 'react'
-
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   type DropdownMenuContentProps,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+} from '@mailflow/ui/components'
+import { Moon, Settings, Sun } from '@mailflow/ui/icons'
+import { type Theme, ThemeProvider, useTheme } from '@mailflow/ui/theme'
+import { type ComponentType, useState } from 'react'
 
 type ThemeSelectorProps = {
   side?: NonNullable<DropdownMenuContentProps['side']>
