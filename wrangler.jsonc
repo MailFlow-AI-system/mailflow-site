@@ -12,7 +12,7 @@
       "name": "mailflow-site-staging"
     },
     "production": {
-      "name": "mailflow-site-production"
+      "name": "mailflow-site"
     }
   }
 }
