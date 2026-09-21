@@ -29,3 +29,4 @@ Thumbs.db
 # Local generated tooling state
 graphify-out/
 .codex/hooks.json
+.wrangler/

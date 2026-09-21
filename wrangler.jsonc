@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mailflow-site",
+  "compatibility_date": "2026-09-16",
+  "observability": {
+    "enabled": true
+  },
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist"
+  },
+  "env": {
+    "development": {
+      "name": "mailflow-site-development",
+      "workers_dev": true
+    },
+    "staging": {
+      "name": "mailflow-site-staging",
+      "workers_dev": true
+    },
+    "production": {
+      "name": "mailflow-site-production",
+      "workers_dev": true
+    }
+  }
+}

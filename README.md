@@ -58,6 +58,9 @@ The site is available at `http://127.0.0.1:4321`.
 | `bun run test:watch` | Run Vitest in watch mode |
 | `bun run test:e2e` | Run the Chromium Playwright smoke test |
 | `bun run check` | Run lint, format, typecheck, unit tests, and build |
+| `bun run deploy:development` | Build and deploy the `mailflow-site-development` Worker |
+| `bun run deploy:staging` | Build and deploy the `mailflow-site-staging` Worker |
+| `bun run deploy:production` | Build and deploy the `mailflow-site-production` Worker |
 
 Install the local Chromium browser and Linux dependencies before the first E2E
 run when needed:
@@ -106,7 +109,8 @@ shared code stays capability-neutral.
 │       └── setup.ts
 ├── astro.config.mjs
 ├── playwright.config.ts
-└── vitest.config.ts
+├── vitest.config.ts
+└── wrangler.jsonc
 ```
 
 Ownership rules:
@@ -141,8 +145,30 @@ runs `bun run test:e2e` with `SITE_URL=https://mailflow.example.test`.
 Superseded pull-request runs are cancelled. CI does not authenticate with
 Infisical, deploy, or use secrets.
 
+## CD
+
+The site is a prerendered Astro build hosted on Cloudflare Workers with Static
+Assets. Named Workers are `mailflow-site-development`,
+`mailflow-site-staging`, and `mailflow-site-production`. Custom domains are not
+configured.
+
+The `CD` workflow deploys after a push to `development`, `staging`, or `main`,
+and can be started manually. It maps those branches to the Wrangler environments
+`development`, `staging`, and `production`. GitHub environment concurrency is
+one deployment at a time per target; in-progress runs are not cancelled.
+
+GitHub Actions authenticates to Infisical with OIDC, reads `/mailflow-site` from
+the matching Infisical environment (`dev`, `staging`, or `prod`), and injects
+those values into the build. `SITE_URL` must be present there for each
+environment so canonical URLs match the deployed Worker. Cloudflare deploy
+credentials are `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` on the
+protected GitHub environments `development`, `staging`, and `production`.
+
+Local deploy commands need `SITE_URL` and Cloudflare credentials in the process
+environment. CI remains the merge gate; CD does not re-run Playwright.
+
 ## Initialization boundary
 
-Real landing-page content, signup and API integration, deployment, and an SSR
-adapter are outside this initialization. Add each only through an approved
-feature or platform decision.
+Real landing-page content, signup and API integration, and an SSR adapter are
+outside this initialization. Add each only through an approved feature or
+platform decision.
