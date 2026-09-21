@@ -20,7 +20,8 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "format:check": "biome format .",
-    "check": "bun run lint && bun run format:check && bun run typecheck && bun run test && bun run build"
+    "check": "bun run lint && bun run format:check && bun run typecheck && bun run test && bun run build && bun run check:deploy",
+    "check:deploy": "wrangler deploy --dry-run --env development && wrangler deploy --dry-run --env staging && wrangler deploy --dry-run"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.5",
@@ -44,6 +45,7 @@
     "jsdom": "^30.0.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.0",
+    "wrangler": "^4.70.0"
   }
 }

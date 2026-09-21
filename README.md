@@ -57,7 +57,8 @@ The site is available at `http://127.0.0.1:4321`.
 | `bun run test` | Run colocated Vitest component tests |
 | `bun run test:watch` | Run Vitest in watch mode |
 | `bun run test:e2e` | Run the Chromium Playwright smoke test |
-| `bun run check` | Run lint, format, typecheck, unit tests, and build |
+| `bun run check:deploy` | Validate development, staging, and production Worker bundles without deploying |
+| `bun run check` | Run lint, format, typecheck, unit tests, build, and Worker dry-runs |
 
 Install the local Chromium browser and Linux dependencies before the first E2E
 run when needed:
@@ -76,6 +77,20 @@ The `.infisical.json` file contains project-link metadata only and is safe to co
 Its local value is documented in `.env.example`; `.env` is ignored and must not
 be committed. Never place passwords, API keys, tokens, or other secrets in
 public environment variables, source files, fixtures, browser tests, or logs.
+
+## Deployment
+
+Cloudflare Workers Static Assets serves the generated `dist/` directory without a
+Worker script or Astro server adapter. Wrangler maps the environments to the
+existing Workers:
+
+- `wrangler deploy --env development` targets `mailflow-site-development`.
+- `wrangler deploy --env staging` targets `mailflow-site-staging`.
+- `wrangler deploy` targets the top-level production Worker, `mailflow-site`.
+
+Cloudflare Workers Builds owns deployment triggers for `development`, `staging`,
+and `main`. GitHub Actions validates changes but does not deploy them. Configure
+`SITE_URL` in each Cloudflare build environment after the final domains are set.
 
 ## Architecture
 
@@ -134,15 +149,26 @@ keeps ownership of interactivity explicit.
 
 ## CI
 
-The `CI Required` workflow runs for every pull request. It uses Ubuntu 24.04,
-verifies the pinned Node.js and Bun versions, installs with
-`bun install --frozen-lockfile`, runs `bun run check`, installs Chromium, and
-runs `bun run test:e2e` with `SITE_URL=https://mailflow.example.test`.
-Superseded pull-request runs are cancelled. CI does not authenticate with
-Infisical, deploy, or use secrets.
+The `CI Required` workflow runs for pull requests and pushes targeting
+`development`, `staging`, or `main`. It uses Ubuntu 24.04, verifies the pinned
+Node.js and Bun versions, installs with `bun install --frozen-lockfile`, runs
+`bun run check`, installs Chromium, and runs `bun run test:e2e` with
+`SITE_URL=https://mailflow.example.test`. Superseded pull-request runs are
+cancelled. CI does not authenticate with Infisical, deploy, or use secrets.
 
 ## Initialization boundary
 
-Real landing-page content, signup and API integration, deployment, and an SSR
-adapter are outside this initialization. Add each only through an approved
-feature or platform decision.
+Real landing-page content, signup and API integration, and an SSR adapter are
+outside this initialization. Add each only through an approved feature or
+platform decision.
+
+## Listening
+
+- The site remains an assets-only Worker because the current Astro output is
+  static. A Worker script or server adapter would add runtime complexity without
+  supporting a current requirement.
+- Production uses the top-level `mailflow-site` configuration. A named
+  `production` environment was rejected because Wrangler would target
+  `mailflow-site-production`, which is not the configured production Worker.
+- Cloudflare Workers Builds owns CD. A separate GitHub deployment workflow was
+  rejected to avoid duplicate deployment ownership and credentials.
