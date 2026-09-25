@@ -1,0 +1,24 @@
+---
+import { howItWorksSteps } from '../constants/howItWorksSteps'
+---
+
+<section id="how-it-works" class="bg-muted/30 px-4 py-24 md:px-6">
+  <div class="mx-auto max-w-7xl">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-foreground md:text-4xl">How it works</h2>
+      <p class="mt-4 text-muted-foreground">
+        Three steps to turn your communication into a growth engine.
+      </p>
+    </div>
+
+    <ol class="mt-14 grid gap-8 md:grid-cols-3">
+      {howItWorksSteps.map((step) => (
+          <li class="relative">
+            <p class="text-5xl font-bold text-primary" aria-hidden="true">{step.number}</p>
+            <h3 class="mt-4 text-xl font-semibold text-foreground">{step.title}</h3>
+            <p class="mt-2 text-sm text-muted-foreground">{step.description}</p>
+          </li>
+        ))}
+    </ol>
+  </div>
+</section>

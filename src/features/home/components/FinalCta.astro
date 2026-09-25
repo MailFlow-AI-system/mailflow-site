@@ -1,0 +1,31 @@
+---
+import { Button } from '@mailflow/ui/components'
+import { ArrowRight } from '@mailflow/ui/icons'
+---
+
+<section class="px-4 py-24 md:px-6" id="final-cta">
+  <div
+    class="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-indigo-700 px-6 py-16 text-center text-primary-foreground md:px-12 md:py-20"
+  >
+    <h2 class="text-3xl font-bold tracking-tight text-primary-foreground md:text-4xl">
+      Ready to transform your email and marketing?
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-primary-foreground">
+      Join thousands of companies already using MailFlow AI to scale their communications.
+    </p>
+    <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+      <Button className="px-6 disabled:opacity-100" disabled={true} size="lg" variant="secondary">
+        Start for free
+        <ArrowRight aria-hidden="true" />
+      </Button>
+      <Button
+        className="border-primary-foreground/30 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground disabled:border-primary-foreground/30 disabled:bg-transparent disabled:text-primary-foreground disabled:opacity-100"
+        disabled={true}
+        size="lg"
+        variant="outline"
+      >
+        Talk to sales
+      </Button>
+    </div>
+  </div>
+</section>

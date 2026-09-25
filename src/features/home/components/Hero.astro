@@ -1,0 +1,111 @@
+---
+import { Button } from '@mailflow/ui/components'
+import { ArrowRight, Play, Sparkles } from '@mailflow/ui/icons'
+---
+
+<section class="relative px-4 pt-20 md:px-6 md:pt-28">
+  <div class="mx-auto max-w-7xl text-center">
+    <div
+      class="mb-6 inline-flex h-7 items-center gap-1.5 rounded-full bg-secondary px-3 text-xs font-medium text-secondary-foreground transition-colors hover:bg-secondary/80"
+    >
+      <Sparkles aria-hidden="true" className="size-3.5 text-primary" />
+      <span>Now with a built-in AI assistant</span>
+    </div>
+
+    <h1
+      class="mx-auto max-w-4xl text-4xl font-bold tracking-tight text-foreground md:text-6xl lg:text-7xl"
+    >
+      Email, marketing, and AI in one seamless experience
+    </h1>
+    <p class="mx-auto mt-6 max-w-2xl text-base text-muted-foreground md:text-lg">
+      MailFlow AI brings together the best of Gmail, Mailchimp, Brevo, and ChatGPT in one fast,
+      beautiful platform built to scale. Made for teams that refuse to settle for disconnected
+      tools.
+    </p>
+
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <Button className="px-6 disabled:opacity-100" disabled={true} size="lg">
+        Start for free
+        <ArrowRight aria-hidden="true" />
+      </Button>
+      <Button className="px-6 disabled:opacity-100" disabled={true} size="lg" variant="outline">
+        <Play aria-hidden="true" />
+        Watch demo
+      </Button>
+    </div>
+    <p class="mt-3 text-xs text-muted-foreground">
+      Try it free for 14 days. No credit card required.
+    </p>
+  </div>
+
+  <figure aria-label="MailFlow inbox preview" class="mx-auto mt-16 max-w-6xl text-left">
+    <figcaption class="sr-only">MailFlow inbox preview</figcaption>
+    <div
+      class="relative rounded-2xl border border-border/60 bg-card/70 p-2 shadow-2xl shadow-primary/10"
+    >
+      <div
+        class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
+      ></div>
+      <div class="rounded-xl border border-border/60 bg-background p-4">
+        <div class="flex items-center gap-3 border-b border-border/60 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="size-3 rounded-full bg-destructive/80" aria-hidden="true"></span>
+            <span class="size-3 rounded-full bg-warning/80" aria-hidden="true"></span>
+            <span class="size-3 rounded-full bg-success/80" aria-hidden="true"></span>
+          </div>
+          <div
+            class="ml-4 h-5 flex-1 rounded-md bg-muted/60 text-center text-[10px] leading-5 text-muted-foreground"
+          >
+            app.mailflow.ai/inbox
+          </div>
+        </div>
+
+        <div class="mt-3 grid gap-3 md:grid-cols-12">
+          <aside class="hidden md:col-span-3 md:block" aria-label="Inbox navigation preview">
+            <div class="space-y-2">
+              <div class="h-8 rounded-md bg-primary/10"></div>
+              <div class="h-2 rounded bg-muted"></div>
+              <div class="h-2 w-2/3 rounded bg-muted"></div>
+              <div class="h-2 w-3/4 rounded bg-muted"></div>
+            </div>
+          </aside>
+
+          <div class="space-y-2 md:col-span-5">
+            <div class="flex items-center gap-2">
+              <div class="h-8 flex-1 rounded-md bg-muted"></div>
+              <div class="size-8 rounded-md bg-primary/15"></div>
+            </div>
+            {Array.from({ length: 4 }, () => (
+                <div class="flex items-center gap-3 rounded-lg border border-border/60 p-2.5">
+                  <div class="size-8 rounded-full bg-muted"></div>
+                  <div class="flex-1 space-y-1.5">
+                    <div class="h-2 w-1/2 rounded bg-muted"></div>
+                    <div class="h-2 w-3/4 rounded bg-muted/60"></div>
+                  </div>
+                </div>
+              ))}
+          </div>
+
+          <aside class="md:col-span-4" aria-label="MailFlow Assistant preview">
+            <div class="rounded-lg border border-border/60 bg-muted/30 p-4">
+              <div class="flex items-center gap-2">
+                <Sparkles aria-hidden="true" className="size-4 text-primary" />
+                <span class="text-xs font-semibold">MailFlow Assistant</span>
+              </div>
+              <div class="mt-3 space-y-2">
+                <div class="h-2 rounded bg-muted"></div>
+                <div class="h-2 w-5/6 rounded bg-muted"></div>
+                <div class="h-2 w-4/5 rounded bg-muted"></div>
+              </div>
+              <div
+                class="mt-4 h-7 rounded-md bg-primary text-center text-xs leading-7 text-primary-foreground"
+              >
+                Generate reply
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </figure>
+</section>

@@ -1,8 +1,45 @@
 ---
-import FoundationStatus from '@/features/home/components/FoundationStatus'
+import AiAssistant from '@/features/home/components/AiAssistant.astro'
+import Faq from '@/features/home/components/Faq'
+import Features from '@/features/home/components/Features.astro'
+import FinalCta from '@/features/home/components/FinalCta.astro'
+import Footer from '@/features/home/components/Footer.astro'
+import Header from '@/features/home/components/Header'
+import Hero from '@/features/home/components/Hero.astro'
+import HowItWorks from '@/features/home/components/HowItWorks.astro'
+import Metrics from '@/features/home/components/Metrics.astro'
+import Pricing from '@/features/home/components/Pricing.astro'
+import Testimonials from '@/features/home/components/Testimonials.astro'
+import TrustBar from '@/features/home/components/TrustBar.astro'
 import SiteLayout from '@/layouts/SiteLayout.astro'
 ---
 
 <SiteLayout>
-  <FoundationStatus />
+  <div class="relative min-h-screen overflow-x-hidden bg-background">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        class="absolute -top-1/4 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"
+      ></div>
+      <div
+        class="absolute top-1/3 -left-1/4 h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-3xl"
+      ></div>
+      <div
+        class="absolute top-1/3 -right-1/4 h-[500px] w-[500px] rounded-full bg-violet-500/10 blur-3xl"
+      ></div>
+    </div>
+    <Header client:load />
+    <main>
+      <Hero />
+      <TrustBar />
+      <Features />
+      <AiAssistant />
+      <HowItWorks />
+      <Metrics />
+      <Testimonials />
+      <Pricing />
+      <Faq client:load />
+      <FinalCta />
+    </main>
+    <Footer />
+  </div>
 </SiteLayout>

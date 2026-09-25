@@ -1,19 +1,15 @@
 # MailFlow Site
 
-MailFlow Site is the public website for MailFlow. It will host landing pages,
-product information, pricing, legal content, and other public marketing
-experiences. This repository currently contains the executable Astro foundation
-and one public foundation-status slice.
+MailFlow Site is the public Astro website for MailFlow AI. The current page is a complete static marketing landing page with explicit hydration boundaries for navigation, theme selection, the mobile sheet, and the FAQ accordion.
 
 ## Requirements
 
 - Node.js `24.20.0`
 - Bun `1.4.1`
 - Infisical CLI
-- Access to the `MailFlow-AI` project in Infisical
+- Access to the `MailFlow-AI` project in Infisical for local development
 
-The expected Node.js version is recorded in `.node-version`; the Bun version is
-recorded in `package.json`.
+The expected Node.js version is recorded in `.node-version`; the Bun version is recorded in `package.json`.
 
 ## Local setup
 
@@ -29,9 +25,7 @@ Authenticate the Infisical CLI:
 infisical login
 ```
 
-The committed `.infisical.json` links this repository to `MailFlow-AI`. Development commands read
-the `dev` environment and `/mailflow-site` secret path. Run `infisical init` only when the checkout
-must be linked to a different project.
+The committed `.infisical.json` links this repository to `MailFlow-AI`. Development commands read the `dev` environment and `/mailflow-site` secret path. Run `infisical init` only when the checkout must be linked to a different project.
 
 Create the local public configuration and start the development server:
 
@@ -49,19 +43,27 @@ The site is available at `http://127.0.0.1:4321`.
 | `bun run dev` | Start Astro with the Infisical `dev` environment |
 | `bun run build` | Build the static site into `dist/` |
 | `bun run preview` | Preview the production build locally |
-| `bun run lint` | Run Biome lint checks |
+| `bun run lint` | Run Biome checks |
 | `bun run lint:fix` | Apply safe Biome fixes |
 | `bun run format:check` | Check formatting with Biome |
 | `bun run format` | Format files with Biome |
 | `bun run typecheck` | Run `astro check` |
 | `bun run test` | Run colocated Vitest component tests |
 | `bun run test:watch` | Run Vitest in watch mode |
-| `bun run test:e2e` | Run the Chromium Playwright smoke test |
+| `bun run test:e2e` | Run the landing-page Playwright suite in Desktop Chrome and Mobile Chrome |
+| `bunx playwright test e2e/accessibility.spec.ts` | Run Axe checks for light and dark themes in both browser projects |
 | `bun run check:deploy` | Validate development, staging, and production Worker bundles without deploying |
-| `bun run check` | Run lint, format, typecheck, unit tests, build, and Worker dry-runs |
+| `bun run check` | Run lint, format, typecheck, unit tests, static build, and Worker dry-runs |
 
-Install the local Chromium browser and Linux dependencies before the first E2E
-run when needed:
+`SITE_URL` is required for commands that build or inspect canonical metadata. For a reproducible local validation run:
+
+```bash
+SITE_URL=https://mailflow.example.test bun run check
+bun run test:e2e
+bunx playwright test e2e/accessibility.spec.ts
+```
+
+Install the local Chromium browser and Linux dependencies before the first E2E run when needed:
 
 ```bash
 bunx playwright install --with-deps chromium
@@ -69,14 +71,9 @@ bunx playwright install --with-deps chromium
 
 ## Environment and security
 
-Infisical is the secret-delivery boundary for local development. The `/mailflow-site` path currently
-contains no secrets; add future secrets there instead of committing them or writing them to `.env`.
-The `.infisical.json` file contains project-link metadata only and is safe to commit.
+Infisical is the secret-delivery boundary for local development. The `/mailflow-site` path currently contains no secrets; add future secrets there instead of committing them or writing them to `.env`. The `.infisical.json` file contains project-link metadata only and is safe to commit.
 
-`SITE_URL` is required public site configuration used to build canonical URLs.
-Its local value is documented in `.env.example`; `.env` is ignored and must not
-be committed. Never place passwords, API keys, tokens, or other secrets in
-public environment variables, source files, fixtures, browser tests, or logs.
+`SITE_URL` is public site configuration used to build canonical URLs. Its local value is documented in `.env.example`; `.env` is ignored and must not be committed. Never place passwords, API keys, tokens, or other secrets in public environment variables, source files, fixtures, browser tests, or logs.
 
 ## Deployment
 
@@ -94,31 +91,52 @@ and `main`. GitHub Actions validates changes but does not deploy them. Configure
 
 ## Architecture
 
-The site uses Astro for public page composition and React for components that
-need interactive behavior. Features are organized by user-facing capability;
-shared code stays capability-neutral.
+Astro owns public page composition and static rendering. React owns the small set of interactions that need a browser runtime. The landing page composition is:
+
+```text
+Header client:load
+main
+├── Hero
+├── TrustBar
+├── Features
+├── AiAssistant
+├── HowItWorks
+├── Metrics
+├── Testimonials
+├── Pricing
+├── Faq client:load
+└── FinalCta
+Footer
+```
+
+Repository layout for the landing page:
 
 ```text
 .
+├── docs/
+│   └── landing-page.md
 ├── e2e/
-│   └── foundation.spec.ts
+│   ├── accessibility.spec.ts
+│   └── landing.spec.ts
 ├── src/
-│   ├── features/
-│   │   └── home/
-│   │       └── components/
-│   │           ├── FoundationStatus.test.tsx
-│   │           └── FoundationStatus.tsx
-│   ├── layouts/
-│   │   └── SiteLayout.astro
-│   ├── pages/
-│   │   └── index.astro
-│   ├── shared/
-│   │   └── config/
-│   │       └── site.ts
-│   ├── styles/
-│   │   └── global.css
-│   └── test/
-│       └── setup.ts
+│   ├── features/home/components/
+│   │   ├── Header.tsx
+│   │   ├── Faq.tsx
+│   │   ├── Hero.astro
+│   │   ├── TrustBar.astro
+│   │   ├── Features.astro
+│   │   ├── AiAssistant.astro
+│   │   ├── HowItWorks.astro
+│   │   ├── Metrics.astro
+│   │   ├── Testimonials.astro
+│   │   ├── Pricing.astro
+│   │   ├── FinalCta.astro
+│   │   ├── Footer.astro
+│   ├── layouts/SiteLayout.astro
+│   ├── pages/index.astro
+│   ├── shared/config/site.ts
+│   ├── styles/global.css
+│   └── test/setup.ts
 ├── astro.config.mjs
 ├── playwright.config.ts
 └── vitest.config.ts
@@ -126,28 +144,27 @@ shared code stays capability-neutral.
 
 Ownership rules:
 
-- `src/pages/` owns route entrypoints and page-level composition. Keep feature
-  behavior in `src/features/` instead of growing route files into application
-  modules.
-- `src/features/<feature>/` owns UI, content presentation, and behavior for one
-  public capability. A feature must not reach into another feature's internals.
-- `src/shared/` owns stable technical configuration and genuinely reusable
-  primitives. It must not become a dumping ground for feature-specific logic.
-- `src/layouts/` owns the document shell, metadata, canonical URL, and slots.
-  Layouts do not own landing-page content.
-- `src/styles/` owns global imports, resets, and site-wide tokens. Keep
-  feature-specific styling close to its feature when it does not belong to the
-  global layer.
-- `src/test/` owns shared test setup only. Colocated component tests verify
-  accessible user-observable behavior; `e2e/` verifies complete browser flows
-  through the running site.
+- `src/pages/` owns route entrypoints and page-level composition. Keep feature behavior in `src/features/` instead of growing route files into application modules.
+- `src/features/home/` owns landing-page sections, content presentation, and interaction composition for the home capability. Static sections stay Astro; interactive sections stay React and receive the smallest required `client:*` directive at the route boundary.
+- Reusable interaction primitives such as the sheet, accordion, and dropdown menu come from `@mailflow/ui/components`. Keep landing-specific composition in `src/features/home/components/`.
+- `src/shared/` owns stable technical configuration and genuinely reusable primitives. It must not become a dumping ground for feature-specific logic.
+- `src/layouts/` owns the document shell, metadata, canonical URL, theme bootstrap, and slots. Layouts do not own landing-page content.
+- `src/styles/` owns global imports and site-wide styles. Keep feature-specific styling close to its feature when it does not belong in the global layer.
+- `src/test/` owns shared test setup only. Colocated component tests verify accessible user-observable behavior; `e2e/` verifies complete browser flows through the running site.
 
-Astro renders components without client JavaScript by default. Add the smallest
-appropriate React `client:*` directive only when a component needs browser
-interactivity; do not hydrate static content. This keeps public pages fast and
-keeps ownership of interactivity explicit.
+## Design-system integration
 
-## CI
+The landing page consumes `@mailflow/ui` from design-system SHA `e95368187e345be4ba3e2a4bf4830e60cbbf491e`.
+
+- Import reusable buttons and icons from `@mailflow/ui/components` and `@mailflow/ui/icons`.
+- Import `ThemeProvider`, `useTheme`, and `Theme` from `@mailflow/ui/theme`.
+- Import the synchronous theme bootstrap from `@mailflow/ui/theme-script` in `SiteLayout.astro`.
+- Use shared semantic tokens such as `background`, `foreground`, `muted`, `border`, and `primary` rather than consumer-only color values.
+- Keep reusable primitives in the design system; the site only composes them for landing-page interactions.
+
+## Validation coverage
+
+The landing E2E suite covers section order and presence, internal anchors, mobile navigation open/Escape behavior, FAQ open/close behavior, system/light/dark theme selection and persistence, console/page errors, hydration regressions, horizontal overflow, keyboard focus, and inert disabled commercial actions. Axe runs against WCAG 2.0/2.1 A/AA tags for both themes in Desktop Chrome and Mobile Chrome. The suite intentionally avoids raw screenshot snapshots.
 
 The `CI Required` workflow runs for pull requests and pushes targeting
 `development`, `staging`, or `main`. It uses Ubuntu 24.04, verifies the pinned

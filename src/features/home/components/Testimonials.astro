@@ -1,0 +1,44 @@
+---
+import { Star } from '@mailflow/ui/icons'
+
+import { testimonials } from '../constants/testimonials'
+---
+
+<section class="bg-muted/30 px-4 py-24 md:px-6" id="testimonials">
+  <div class="mx-auto max-w-7xl">
+    <div class="mx-auto max-w-2xl text-center">
+      <h2 class="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+        What our customers say
+      </h2>
+      <p class="mt-4 text-muted-foreground">
+        Marketing, sales, and customer success teams have already changed how they work.
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-5 md:grid-cols-3">
+      {testimonials.map((testimonial) => (
+          <figure class="rounded-xl border border-border/60 bg-card/60 p-6 shadow-sm">
+            <div aria-label="5 out of 5 stars" class="flex gap-1 text-warning" role="img">
+              {Array.from({ length: 5 }, () => (
+                <Star aria-hidden="true" className="size-4 fill-current" />
+              ))}
+            </div>
+            <blockquote class="mt-4 text-sm leading-relaxed text-foreground">
+              “{testimonial.quote}”
+            </blockquote>
+            <figcaption class="mt-6 flex items-center gap-3">
+              <span class="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                {testimonial.initials}
+              </span>
+              <span>
+                <span class="block text-sm font-semibold text-card-foreground">
+                  {testimonial.name}
+                </span>
+                <span class="block text-xs text-muted-foreground">{testimonial.role}</span>
+              </span>
+            </figcaption>
+          </figure>
+        ))}
+    </div>
+  </div>
+</section>
