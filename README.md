@@ -34,7 +34,7 @@ cp .env.example .env
 bun run dev
 ```
 
-The site is available at `http://127.0.0.1:4321`.
+The site is available at `http://localhost:4321`.
 
 ## Commands
 
@@ -55,10 +55,18 @@ The site is available at `http://127.0.0.1:4321`.
 | `bun run check:deploy` | Validate development, staging, and production Worker bundles without deploying |
 | `bun run check` | Run lint, format, typecheck, unit tests, static build, and Worker dry-runs |
 
-`SITE_URL` is required for commands that build or inspect canonical metadata. For a reproducible local validation run:
+`SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WEB_URL` are required to build the site. Configure these public values in the Infisical `/mailflow-site` path or `.env`:
 
 ```bash
-SITE_URL=https://mailflow.example.test bun run check
+SITE_URL=http://localhost:4321
+PUBLIC_API_URL=http://localhost:8080
+PUBLIC_WEB_URL=http://localhost:3000
+```
+
+For reproducible CI validation, use the local API and Web URLs with the example site origin:
+
+```bash
+SITE_URL=https://mailflow.example.test PUBLIC_API_URL=http://localhost:8080 PUBLIC_WEB_URL=http://localhost:3000 bun run check
 bun run test:e2e
 bunx playwright test e2e/accessibility.spec.ts
 ```
@@ -71,9 +79,11 @@ bunx playwright install --with-deps chromium
 
 ## Environment and security
 
-Infisical is the secret-delivery boundary for local development. The `/mailflow-site` path currently contains no secrets; add future secrets there instead of committing them or writing them to `.env`. The `.infisical.json` file contains project-link metadata only and is safe to commit.
+Infisical is the configuration-delivery boundary for local development. Configure `SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WEB_URL` in the `/mailflow-site` path. The `.infisical.json` file contains project-link metadata only and is safe to commit.
 
-`SITE_URL` is public site configuration used to build canonical URLs. Its local value is documented in `.env.example`; `.env` is ignored and must not be committed. Never place passwords, API keys, tokens, or other secrets in public environment variables, source files, fixtures, browser tests, or logs.
+`SITE_URL` builds canonical URLs. `PUBLIC_API_URL` selects the public Core API endpoint and `PUBLIC_WEB_URL` selects the Web app destination after signup; these are public URLs and contain no credentials. Their local values are documented in `.env.example`; `.env` is ignored and must not be committed. Never place passwords, API keys, tokens, or other secrets in public environment variables, source files, fixtures, browser tests, or logs.
+
+Local development uses `http://localhost` on separate ports for Site, Core, and Web so the browser can share the host-only auth cookie across these origins. The Site posts directly to Core with credentials included and sends no email during signup.
 
 ## Deployment
 
@@ -87,7 +97,7 @@ existing Workers:
 
 Cloudflare Workers Builds owns deployment triggers for `development`, `staging`,
 and `main`. GitHub Actions validates changes but does not deploy them. Configure
-`SITE_URL` in each Cloudflare build environment after the final domains are set.
+`SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WEB_URL` in each Cloudflare build environment after the final domains are set.
 
 ## Architecture
 
@@ -146,7 +156,8 @@ Ownership rules:
 
 - `src/pages/` owns route entrypoints and page-level composition. Keep feature behavior in `src/features/` instead of growing route files into application modules.
 - `src/features/home/` owns landing-page sections, content presentation, and interaction composition for the home capability. Static sections stay Astro; interactive sections stay React and receive the smallest required `client:*` directive at the route boundary.
-- Reusable interaction primitives such as the sheet, accordion, and dropdown menu come from `@mailflow/ui/components`. Keep landing-specific composition in `src/features/home/components/`.
+- `src/features/auth/` owns the signup schema and form behavior. The route supplies only its validated public API and Web URLs.
+- Reusable primitives such as the button, input, sheet, accordion, and dropdown menu come from `@mailflow/ui/components`. Keep landing and signup composition in `src/features/`.
 - `src/shared/` owns stable technical configuration and genuinely reusable primitives. It must not become a dumping ground for feature-specific logic.
 - `src/layouts/` owns the document shell, metadata, canonical URL, theme bootstrap, and slots. Layouts do not own landing-page content.
 - `src/styles/` owns global imports and site-wide styles. Keep feature-specific styling close to its feature when it does not belong in the global layer.
@@ -154,7 +165,7 @@ Ownership rules:
 
 ## Design-system integration
 
-The landing page consumes `@mailflow/ui` from design-system SHA `e95368187e345be4ba3e2a4bf4830e60cbbf491e`.
+The site consumes `@mailflow/ui` from the design-system `v0.3.0` tag (commit `56cb4a1e606eb73d2c1dc11c455955926aa4c347`).
 
 - Import reusable buttons and icons from `@mailflow/ui/components` and `@mailflow/ui/icons`.
 - Import `ThemeProvider`, `useTheme`, and `Theme` from `@mailflow/ui/theme`.
@@ -164,20 +175,15 @@ The landing page consumes `@mailflow/ui` from design-system SHA `e95368187e345be
 
 ## Validation coverage
 
-The landing E2E suite covers section order and presence, internal anchors, mobile navigation open/Escape behavior, FAQ open/close behavior, system/light/dark theme selection and persistence, console/page errors, hydration regressions, horizontal overflow, keyboard focus, and inert disabled commercial actions. Axe runs against WCAG 2.0/2.1 A/AA tags for both themes in Desktop Chrome and Mobile Chrome. The suite intentionally avoids raw screenshot snapshots.
+The E2E suite covers landing section order and presence, internal anchors, active signup links and route, mobile navigation open/Escape behavior, FAQ open/close behavior, system/light/dark theme selection and persistence, console/page errors, hydration regressions, horizontal overflow, keyboard focus, and disabled commercial actions. Axe runs against WCAG 2.0/2.1 A/AA tags for both themes in Desktop Chrome and Mobile Chrome. The suite intentionally avoids raw screenshot snapshots.
 
 The `CI Required` workflow runs for pull requests and pushes targeting
 `development`, `staging`, or `main`. It uses Ubuntu 24.04, verifies the pinned
 Node.js and Bun versions, installs with `bun install --frozen-lockfile`, runs
 `bun run check`, installs Chromium, and runs `bun run test:e2e` with
-`SITE_URL=https://mailflow.example.test`. Superseded pull-request runs are
-cancelled. CI does not authenticate with Infisical, deploy, or use secrets.
-
-## Initialization boundary
-
-Real landing-page content, signup and API integration, and an SSR adapter are
-outside this initialization. Add each only through an approved feature or
-platform decision.
+`SITE_URL=https://mailflow.example.test` and local API/Web fixture URLs.
+Superseded pull-request runs are cancelled. CI does not authenticate with
+Infisical, deploy, or use secrets.
 
 ## Listening
 
@@ -188,3 +194,10 @@ platform decision.
   selection while using the clean `mailflow-site` Worker name.
 - Cloudflare Workers Builds owns CD. A separate GitHub deployment workflow was
   rejected to avoid duplicate deployment ownership and credentials.
+- Signup runs from the static Site against the public Core endpoint. A server
+  proxy was rejected because the existing Core CORS contract and shared
+  `localhost` cookie host allow direct browser requests across local ports.
+- The signup page collects only name, email, and password, creates the account
+  without sending email, and redirects to the configured Web `/app` after a
+  successful Core response. Login and account recovery remain outside this
+  feature.
