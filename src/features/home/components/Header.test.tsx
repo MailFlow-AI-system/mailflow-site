@@ -15,14 +15,14 @@ describe('Header', () => {
     expect(mark?.querySelector('svg')).toHaveClass('text-primary-foreground')
   })
 
-  it('removes Sign In while keeping disabled Sign Up actions', () => {
+  it('removes Sign In and links Sign Up actions to the signup page', () => {
     render(<Header />)
 
     expect(screen.queryByRole('button', { name: 'Sign In' })).not.toBeInTheDocument()
-    const signUpButtons = screen.getAllByRole('button', { name: 'Sign Up' })
-    expect(signUpButtons.length).toBeGreaterThan(0)
-    signUpButtons.forEach((button) => {
-      expect(button).toBeDisabled()
+    const signUpLinks = screen.getAllByRole('link', { name: 'Sign Up' })
+    expect(signUpLinks.length).toBeGreaterThan(0)
+    signUpLinks.forEach((link) => {
+      expect(link).toHaveAttribute('href', '/signup')
     })
   })
 
