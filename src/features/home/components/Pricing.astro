@@ -1,5 +1,5 @@
 ---
-import { Button } from '@mailflow/ui/components'
+import { Button, buttonVariants } from '@mailflow/ui/components'
 import { Check } from '@mailflow/ui/icons'
 
 import { plans } from '../constants/plans'
@@ -43,13 +43,27 @@ import { plans } from '../constants/plans'
                 </li>
               ))}
             </ul>
-            <Button
-              className="mt-6 w-full disabled:opacity-100"
-              disabled={true}
-              variant={plan.popular ? 'default' : 'outline'}
-            >
-              {plan.cta}
-            </Button>
+            {plan.cta === 'Start for free' ? (
+              <a
+                class={
+                  buttonVariants({
+                    className: 'mt-6 w-full',
+                    variant: plan.popular ? 'default' : 'outline',
+                  })
+                }
+                href="/signup"
+              >
+                {plan.cta}
+              </a>
+            ) : (
+              <Button
+                className="mt-6 w-full disabled:opacity-100"
+                disabled={true}
+                variant={plan.popular ? 'default' : 'outline'}
+              >
+                {plan.cta}
+              </Button>
+            )}
           </article>
         ))}
     </div>

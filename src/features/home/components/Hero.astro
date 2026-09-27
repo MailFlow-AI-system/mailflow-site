@@ -1,5 +1,5 @@
 ---
-import { Button } from '@mailflow/ui/components'
+import { Button, buttonVariants } from '@mailflow/ui/components'
 import { ArrowRight, Play, Sparkles } from '@mailflow/ui/icons'
 ---
 
@@ -24,10 +24,10 @@ import { ArrowRight, Play, Sparkles } from '@mailflow/ui/icons'
     </p>
 
     <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <Button className="px-6 disabled:opacity-100" disabled={true} size="lg">
+      <a class={buttonVariants({ className: 'px-6', size: 'lg' })} href="/signup">
         Start for free
         <ArrowRight aria-hidden="true" />
-      </Button>
+      </a>
       <Button className="px-6 disabled:opacity-100" disabled={true} size="lg" variant="outline">
         <Play aria-hidden="true" />
         Watch demo

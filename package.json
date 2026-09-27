@@ -25,10 +25,13 @@
   },
   "dependencies": {
     "@astrojs/react": "^6.0.5",
-    "@mailflow/ui": "git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#e95368187e345be4ba3e2a4bf4830e60cbbf491e",
+    "@hookform/resolvers": "^5.9.1",
+    "@mailflow/ui": "git+https://github.com/MailFlow-AI-system/mailflow-design-system.git#v0.3.0",
     "astro": "^7.3.2",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "react-hook-form": "^7.89.0",
+    "zod": "^4.5.4"
   },
   "allowScripts": {
     "esbuild": true

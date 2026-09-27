@@ -1,0 +1,42 @@
+---
+import { PUBLIC_API_URL, PUBLIC_WEB_URL } from 'astro:env/client'
+import SignupForm from '@/features/auth/components/SignupForm'
+import SiteLayout from '@/layouts/SiteLayout.astro'
+---
+
+<SiteLayout
+  title="Create your account | MailFlow AI"
+  description="Create a MailFlow AI account to get started."
+>
+  <main
+    class="relative grid min-h-screen place-items-center overflow-hidden bg-background px-4 py-16"
+  >
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div
+        class="absolute -top-1/4 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"
+      ></div>
+      <div
+        class="absolute bottom-0 -left-1/4 h-[400px] w-[400px] rounded-full bg-indigo-500/10 blur-3xl"
+      ></div>
+    </div>
+
+    <section
+      aria-labelledby="signup-heading"
+      class="relative w-full max-w-md rounded-2xl border border-border/60 bg-card/80 p-6 shadow-xl shadow-primary/10 backdrop-blur md:p-8"
+    >
+      <a class="text-sm font-medium text-primary underline-offset-4 hover:underline" href="/">
+        ← Back to MailFlow
+      </a>
+      <h1 class="mt-8 text-3xl font-bold tracking-tight text-card-foreground" id="signup-heading">
+        Create your account
+      </h1>
+      <p class="mt-2 text-sm text-muted-foreground">
+        Get started with MailFlow AI using your name, email, and a password.
+      </p>
+
+      <div class="mt-8">
+        <SignupForm client:load apiUrl={PUBLIC_API_URL} webAppUrl={PUBLIC_WEB_URL} />
+      </div>
+    </section>
+  </main>
+</SiteLayout>

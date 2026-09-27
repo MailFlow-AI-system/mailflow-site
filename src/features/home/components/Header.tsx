@@ -1,5 +1,6 @@
 import {
   Button,
+  buttonVariants,
   Sheet,
   SheetContent,
   SheetDescription,
@@ -26,10 +27,10 @@ export default function Header() {
 
         <div className="hidden items-center gap-3 md:flex">
           <ThemeSelector />
-          <Button className="disabled:opacity-100" disabled={true} size="sm">
+          <a className={buttonVariants({ size: 'sm' })} href="/signup">
             Sign Up
             <ArrowRight aria-hidden={true} />
-          </Button>
+          </a>
         </div>
 
         <Sheet open={mobileNavigationOpen} onOpenChange={setMobileNavigationOpen}>
@@ -56,10 +57,10 @@ export default function Header() {
             />
             <div className="mt-auto flex flex-col gap-3">
               <ThemeSelector side="top" />
-              <Button className="disabled:opacity-100" disabled={true}>
+              <a className={buttonVariants()} href="/signup">
                 Sign Up
                 <ArrowRight aria-hidden={true} />
-              </Button>
+              </a>
             </div>
           </SheetContent>
         </Sheet>

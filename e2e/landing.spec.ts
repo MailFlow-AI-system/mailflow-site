@@ -42,6 +42,19 @@ test('renders the landing page sections in the approved order', async ({ page })
   ])
 })
 
+test('renders the signup form with the three required account fields', async ({ page }) => {
+  await page.goto('/signup')
+
+  await expect(page).toHaveTitle('Create your account | MailFlow AI')
+  await expect(page.getByRole('heading', { name: 'Create your account', level: 1 })).toBeVisible()
+  await expect(page.getByRole('form', { name: 'Create your account' })).toBeVisible()
+  await expect(page.getByLabel('Name', { exact: true })).toBeVisible()
+  await expect(page.getByLabel('Email', { exact: true })).toBeVisible()
+  await expect(page.getByLabel('Password', { exact: true })).toBeVisible()
+  await expect(page.locator('form input')).toHaveCount(3)
+  await expect(page.getByRole('link', { name: 'Back to MailFlow' })).toHaveAttribute('href', '/')
+})
+
 test('navigation links resolve to each internal section', async ({ page }) => {
   await page.goto('/')
   await waitForHydration(page)
@@ -73,7 +86,7 @@ test('navigation links resolve to each internal section', async ({ page }) => {
   }
 })
 
-test('keeps commercial and external actions inert until their integrations exist', async ({
+test('enables signup actions and keeps commercial and external actions inert', async ({
   page,
 }, testInfo) => {
   await page.goto('/')
@@ -94,16 +107,25 @@ test('keeps commercial and external actions inert until their integrations exist
     }
   }
 
-  const backgroundActions =
-    testInfo.project.name === 'Mobile Chrome'
-      ? ['Talk to sales', 'Start for free', 'Watch demo']
-      : ['Sign Up', 'Talk to sales', 'Start for free', 'Watch demo']
-  for (const name of backgroundActions) await assertDisabled(name)
+  const signupLinks = page.getByRole('link', { name: /^(Sign Up|Start for free)$/ })
+  await expect(signupLinks).not.toHaveCount(0)
+  for (let index = 0; index < (await signupLinks.count()); index++) {
+    await expect(signupLinks.nth(index)).toHaveAttribute('href', '/signup')
+    await expect(signupLinks.nth(index)).toBeEnabled()
+  }
+
+  await assertDisabled('Talk to sales')
+  await assertDisabled('Watch demo')
 
   if (testInfo.project.name === 'Mobile Chrome') {
     await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
     await expect(page.getByRole('button', { name: 'Sign In', exact: true })).toHaveCount(0)
-    await assertDisabled('Sign Up')
+    const signupLink = page
+      .getByRole('dialog', { name: 'Mobile navigation', exact: true })
+      .getByRole('link', { name: 'Sign Up', exact: true })
+    await expect(signupLink).toHaveAttribute('href', '/signup')
+    await expect(signupLink).toBeEnabled()
+    await expect(page).toHaveURL(initialUrl)
     await page.keyboard.press('Escape')
   }
 
@@ -170,15 +192,15 @@ test('renders three testimonial groups with five-star ratings', async ({ page })
   }
 })
 
-test('keeps the final Start for free CTA disabled with its arrow icon', async ({ page }) => {
+test('links the final Start for free CTA to signup with its arrow icon', async ({ page }) => {
   await page.goto('/')
   await waitForHydration(page)
 
-  const cta = page.locator('#final-cta').getByRole('button', {
+  const cta = page.locator('#final-cta').getByRole('link', {
     name: 'Start for free',
     exact: true,
   })
-  await expect(cta).toBeDisabled()
+  await expect(cta).toHaveAttribute('href', '/signup')
   await expect(cta.locator('svg')).toHaveCount(1)
 })
 
