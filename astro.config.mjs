@@ -14,6 +14,16 @@ export default defineConfig({
         access: 'public',
         url: true,
       }),
+      PUBLIC_API_URL: envField.string({
+        context: 'client',
+        access: 'public',
+        url: true,
+      }),
+      PUBLIC_WEB_URL: envField.string({
+        context: 'client',
+        access: 'public',
+        url: true,
+      }),
     },
   },
   integrations: [react()],
