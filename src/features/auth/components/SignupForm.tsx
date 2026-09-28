@@ -28,7 +28,7 @@ export default function SignupForm({ apiUrl, webAppUrl, onRedirect }: SignupForm
     try {
       const response = await fetch(new URL('/api/auth/sign-up/email', apiUrl).toString(), {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'omit',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       })
@@ -41,9 +41,9 @@ export default function SignupForm({ apiUrl, webAppUrl, onRedirect }: SignupForm
         return
       }
 
-      const appUrl = new URL('/app', webAppUrl).toString()
-      if (onRedirect) onRedirect(appUrl)
-      else window.location.assign(appUrl)
+      const loginUrl = new URL('/login', webAppUrl).toString()
+      if (onRedirect) onRedirect(loginUrl)
+      else window.location.assign(loginUrl)
     } catch {
       setError('root.server', {
         type: 'server',

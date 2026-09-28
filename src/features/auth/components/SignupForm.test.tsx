@@ -54,7 +54,7 @@ describe('SignupForm', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  it('posts validated credentials with cookies and redirects to the Web app on success', async () => {
+  it('posts validated signup without cookies and redirects to Web login on success', async () => {
     fetchMock.mockResolvedValue(new Response(null, { status: 200 }))
     const onRedirect = vi.fn()
     render(<SignupForm {...props} onRedirect={onRedirect} />)
@@ -62,12 +62,12 @@ describe('SignupForm', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
 
-    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith(`${props.webAppUrl}/app`))
+    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith(`${props.webAppUrl}/login`))
     expect(fetchMock).toHaveBeenCalledWith(
       `${props.apiUrl}/api/auth/sign-up/email`,
       expect.objectContaining({
         method: 'POST',
-        credentials: 'include',
+        credentials: 'omit',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: 'Maya Example',
