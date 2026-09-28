@@ -29,8 +29,9 @@ jobs:
     env:
       CI: true
       SITE_URL: https://mailflow.example.test
-      PUBLIC_API_URL: http://localhost:8080
-      PUBLIC_WEB_URL: http://localhost:3000
+      # Reserved test domains keep CI independent from deployed services.
+      PUBLIC_API_URL: https://api.mailflow.example.test
+      PUBLIC_WEB_URL: https://web.mailflow.example.test
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

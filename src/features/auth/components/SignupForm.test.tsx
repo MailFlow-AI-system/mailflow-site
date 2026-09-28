@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import SignupForm from './SignupForm'
 
 const props = {
-  apiUrl: 'http://localhost:8080',
-  webAppUrl: 'http://localhost:3000',
+  apiUrl: 'https://api.mailflow.example.test',
+  webAppUrl: 'https://web.mailflow.example.test',
 }
 
 function fillSignupForm() {
@@ -49,9 +49,9 @@ describe('SignupForm', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
 
-    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith('http://localhost:3000/app'))
+    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith(`${props.webAppUrl}/app`))
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:8080/api/auth/sign-up/email',
+      `${props.apiUrl}/api/auth/sign-up/email`,
       expect.objectContaining({
         method: 'POST',
         credentials: 'include',
