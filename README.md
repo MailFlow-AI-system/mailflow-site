@@ -83,7 +83,7 @@ Infisical is the configuration-delivery boundary for local development. Configur
 
 `SITE_URL` builds canonical URLs. `PUBLIC_API_URL` selects the public Core API endpoint and `PUBLIC_WEB_URL` selects the Web app destination after signup; these are public URLs and contain no credentials. Their local values are documented in `.env.example`; `.env` is ignored and must not be committed. Never place passwords, API keys, tokens, or other secrets in public environment variables, source files, fixtures, browser tests, or logs.
 
-Local development uses `http://localhost` on separate ports for Site, Core, and Web so the browser can share the host-only auth cookie across these origins. The Site posts directly to Core with credentials included and sends no email during signup.
+Local development uses `http://localhost` on separate ports for Site, Core, and Web so the browser can share the host-only auth cookie after login. Signup posts directly to Core without sending or accepting cookies and sends no email.
 
 ## Deployment
 
@@ -194,10 +194,12 @@ Infisical, deploy, or use secrets.
   selection while using the clean `mailflow-site` Worker name.
 - Cloudflare Workers Builds owns CD. A separate GitHub deployment workflow was
   rejected to avoid duplicate deployment ownership and credentials.
-- Signup runs from the static Site against the public Core endpoint. A server
-  proxy was rejected because the existing Core CORS contract and shared
-  `localhost` cookie host allow direct browser requests across local ports.
+- Signup runs from the static Site against the public Core endpoint. The Site
+  remains static, so signup does not add a server proxy or depend on reusing the
+  Core cookie in the Web app.
 - The signup page collects only name, email, and password, creates the account
-  without sending email, and redirects to the configured Web `/app` after a
-  successful Core response. Login and account recovery remain outside this
-  feature.
+  without sending email, then redirects to the configured Web `/login` after a
+  successful Core response. It does not sign the user in automatically.
+- Core records authentication operation counts and durations for signup,
+  sign-in, sign-out, and session checks that reach Core. Site has no browser
+  telemetry, so signup failures before a request reaches Core are not counted.
