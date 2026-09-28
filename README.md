@@ -63,10 +63,10 @@ PUBLIC_API_URL=http://localhost:8080
 PUBLIC_WEB_URL=http://localhost:3000
 ```
 
-For reproducible CI validation, use the local API and Web URLs with the example site origin:
+For reproducible CI validation, use reserved example domains; CI does not call these endpoints:
 
 ```bash
-SITE_URL=https://mailflow.example.test PUBLIC_API_URL=http://localhost:8080 PUBLIC_WEB_URL=http://localhost:3000 bun run check
+SITE_URL=https://mailflow.example.test PUBLIC_API_URL=https://api.mailflow.example.test PUBLIC_WEB_URL=https://web.mailflow.example.test bun run check
 bun run test:e2e
 bunx playwright test e2e/accessibility.spec.ts
 ```
