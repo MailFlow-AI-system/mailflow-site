@@ -1,5 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input } from '@mailflow/ui/components'
+import { Eye, EyeOff } from '@mailflow/ui/icons'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { type SignupValues, signupSchema } from '../schemas/signupSchema'
@@ -18,6 +20,7 @@ export default function SignupForm({ apiUrl, webAppUrl, onRedirect }: SignupForm
     register,
     setError,
   } = useForm({ resolver: zodResolver(signupSchema) })
+  const [passwordVisible, setPasswordVisible] = useState(false)
 
   const submitSignup = async (values: SignupValues) => {
     clearErrors('root.server')
@@ -100,17 +103,31 @@ export default function SignupForm({ apiUrl, webAppUrl, onRedirect }: SignupForm
         <label className="text-sm font-medium text-foreground" htmlFor="signup-password">
           Password
         </label>
-        <Input
-          autoComplete="new-password"
-          id="signup-password"
-          maxLength={128}
-          minLength={8}
-          required
-          type="password"
-          aria-describedby={errors.password ? 'signup-password-error' : undefined}
-          aria-invalid={errors.password ? true : undefined}
-          {...register('password')}
-        />
+        <div className="relative">
+          <Input
+            autoComplete="new-password"
+            className="pr-10"
+            id="signup-password"
+            maxLength={128}
+            minLength={8}
+            required
+            type={passwordVisible ? 'text' : 'password'}
+            aria-describedby={errors.password ? 'signup-password-error' : undefined}
+            aria-invalid={errors.password ? true : undefined}
+            {...register('password')}
+          />
+          <Button
+            aria-label={passwordVisible ? 'Hide password' : 'Show password'}
+            aria-pressed={passwordVisible}
+            className="absolute top-0 right-0 text-muted-foreground"
+            size="icon"
+            type="button"
+            variant="ghost"
+            onClick={() => setPasswordVisible((visible) => !visible)}
+          >
+            {passwordVisible ? <EyeOff aria-hidden /> : <Eye aria-hidden />}
+          </Button>
+        </div>
         {errors.password && (
           <p className="text-sm text-destructive" id="signup-password-error">
             {errors.password.message}
