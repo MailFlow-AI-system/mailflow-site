@@ -134,6 +134,79 @@ describe('SignupForm', () => {
     expect(onRedirect).not.toHaveBeenCalled()
   })
 
+  it('clears an invalid code error when requesting a resend', async () => {
+    fetchMock
+      .mockResolvedValueOnce(new Response(null, { status: 200 }))
+      .mockResolvedValueOnce(Response.json({ code: 'INVALID_OTP' }, { status: 400 }))
+      .mockResolvedValueOnce(Response.json({ success: true }))
+    render(<SignupForm {...props} />)
+    fillSignupForm()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
+    fireEvent.change(await screen.findByLabelText('6-digit code'), {
+      target: { value: '123456' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('That code is invalid or expired.')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Resend code' }))
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'If this email can be verified, a new code will arrive shortly.',
+    )
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('replaces an invalid code error with the resend error when sending fails', async () => {
+    fetchMock
+      .mockResolvedValueOnce(new Response(null, { status: 200 }))
+      .mockResolvedValueOnce(Response.json({ code: 'INVALID_OTP' }, { status: 400 }))
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+    render(<SignupForm {...props} />)
+    fillSignupForm()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
+    fireEvent.change(await screen.findByLabelText('6-digit code'), {
+      target: { value: '123456' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
+    await screen.findByText('That code is invalid or expired. Request a new one and try again.')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Resend code' }))
+
+    expect(
+      await screen.findByText("We couldn't send a verification code. Try again in a moment."),
+    ).toBeVisible()
+    expect(
+      screen.queryByText('That code is invalid or expired. Request a new one and try again.'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('sanitizes verification codes to six digits before submitting', async () => {
+    fetchMock
+      .mockResolvedValueOnce(new Response(null, { status: 200 }))
+      .mockResolvedValueOnce(
+        Response.json({ status: true, token: null, user: { emailVerified: true } }),
+      )
+    const onRedirect = vi.fn()
+    render(<SignupForm {...props} onRedirect={onRedirect} />)
+    fillSignupForm()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
+    const code = await screen.findByLabelText('6-digit code')
+    fireEvent.change(code, { target: { value: '1a2 3-4567' } })
+
+    expect(code).toHaveValue('123456')
+    fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      `${props.apiUrl}/api/auth/email-otp/verify-email`,
+      expect.objectContaining({
+        body: JSON.stringify({ email: 'maya@example.com', otp: '123456' }),
+      }),
+    )
+  })
+
   it('resends a verification code without exposing the account response', async () => {
     fetchMock
       .mockResolvedValueOnce(new Response(null, { status: 200 }))
@@ -269,6 +342,39 @@ describe('SignupForm', () => {
     expect(await screen.findByRole('heading', { name: 'Verify your email' })).toBeVisible()
     expect(screen.getByLabelText('Email')).toHaveValue('maya@example.com')
     expect(screen.queryByLabelText('Password')).not.toBeInTheDocument()
+  })
+
+  it('uses the restored email when verifying after a page reload', async () => {
+    window.sessionStorage.setItem('mailflow.signup.pendingEmail', 'maya@example.com')
+    fetchMock.mockResolvedValue(
+      Response.json({ status: true, token: null, user: { emailVerified: true } }),
+    )
+    const onRedirect = vi.fn()
+    render(<SignupForm {...props} onRedirect={onRedirect} />)
+
+    const code = await screen.findByLabelText('6-digit code')
+    fireEvent.change(code, { target: { value: '123456' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
+
+    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith(`${props.webAppUrl}/login`))
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${props.apiUrl}/api/auth/email-otp/verify-email`,
+      expect.objectContaining({
+        body: JSON.stringify({ email: 'maya@example.com', otp: '123456' }),
+      }),
+    )
+  })
+
+  it('prefills email re-entry with the address being verified', async () => {
+    fetchMock.mockResolvedValueOnce(new Response(null, { status: 200 }))
+    render(<SignupForm {...props} />)
+    fillSignupForm()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
+    await screen.findByRole('heading', { name: 'Verify your email' })
+    fireEvent.click(screen.getByRole('button', { name: 'Use a different email' }))
+
+    expect(screen.getByLabelText('Email')).toHaveValue('maya@example.com')
   })
 
   it('shows a friendly server error without exposing the response body', async () => {
