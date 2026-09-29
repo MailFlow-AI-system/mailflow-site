@@ -83,7 +83,7 @@ Infisical is the configuration-delivery boundary for local development. Configur
 
 `SITE_URL` builds canonical URLs. `PUBLIC_API_URL` selects the public Core API endpoint and `PUBLIC_WEB_URL` selects the Web app destination after signup; these are public URLs and contain no credentials. Their local values are documented in `.env.example`; `.env` is ignored and must not be committed. Never place passwords, API keys, tokens, or other secrets in public environment variables, source files, fixtures, browser tests, or logs.
 
-Local development uses `http://localhost` on separate ports for Site, Core, and Web so the browser can share the host-only auth cookie after login. Signup posts directly to Core without sending or accepting cookies and sends no email.
+Local development uses `http://localhost` on separate ports for Site, Core, and Web so the browser can share the host-only auth cookie after login. Signup posts directly to Core without sending or accepting cookies and uses an email OTP for verification.
 
 ## Deployment
 
