@@ -45,8 +45,10 @@ test('renders the landing page sections in the approved order', async ({ page })
 test('renders the signup form with the three required account fields', async ({ page }) => {
   await page.goto('/signup')
 
-  await expect(page).toHaveTitle('Create your account | MailFlow AI')
-  await expect(page.getByRole('heading', { name: 'Create your account', level: 1 })).toBeVisible()
+  await expect(page).toHaveTitle('Get started with MailFlow AI')
+  await expect(
+    page.getByRole('heading', { name: 'Get started with MailFlow AI', level: 1 }),
+  ).toBeVisible()
   await expect(page.getByRole('form', { name: 'Create your account' })).toBeVisible()
   await expect(page.getByLabel('Name', { exact: true })).toBeVisible()
   await expect(page.getByLabel('Email', { exact: true })).toBeVisible()
