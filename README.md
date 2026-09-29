@@ -197,9 +197,8 @@ Infisical, deploy, or use secrets.
 - Signup runs from the static Site against the public Core endpoint. The Site
   remains static, so signup does not add a server proxy or depend on reusing the
   Core cookie in the Web app.
-- The signup page collects only name, email, and password, creates the account
-  without sending email, then redirects to the configured Web `/login` after a
-  successful Core response. It does not sign the user in automatically.
+- Signup sends an email OTP and redirects to the configured Web `/login` only
+  after verification. It does not sign the user in automatically.
 - Core records authentication operation counts and durations for signup,
   sign-in, sign-out, and session checks that reach Core. Site has no browser
   telemetry, so signup failures before a request reaches Core are not counted.
