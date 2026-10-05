@@ -1,24 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { type UseFormReturn, useWatch } from 'react-hook-form'
-import type { SignupFlowClient } from '../clients/signupFlowClient'
+import { useWatch } from 'react-hook-form'
 import { createSignupFlowClient } from '../clients/signupFlowClient'
 import type {
   EmailVerificationValues,
   VerificationRequestValues,
 } from '../schemas/emailVerificationSchema'
-import type { SignupValues } from '../schemas/signupSchema'
-
-export type SignupStep = 'signup' | 'verify' | 'request-code'
-
-type UseSignupFlowOptions = {
-  apiUrl: string
-  webAppUrl: string
-  onRedirect?: (url: string) => void
-  client?: SignupFlowClient
-  signupForm: UseFormReturn<SignupValues>
-  verificationForm: UseFormReturn<EmailVerificationValues>
-  requestCodeForm: UseFormReturn<VerificationRequestValues>
-}
+import type { SignupStep, SignupValues, UseSignupFlowOptions } from '../types/signup'
 
 const verificationRequestMessage = 'If this email can be verified, a new code will arrive shortly.'
 const signupErrorMessage = "We couldn't create your account. Check your details and try again."
@@ -33,10 +20,14 @@ export function useSignupFlow({
   signupForm,
   verificationForm,
   requestCodeForm,
+  onboardingEnabled = false,
 }: UseSignupFlowOptions) {
   const [step, setStep] = useState<SignupStep>('signup')
   const [notice, setNotice] = useState('')
-  const flowClient = useMemo(() => client ?? createSignupFlowClient(apiUrl), [apiUrl, client])
+  const flowClient = useMemo(
+    () => client ?? createSignupFlowClient(apiUrl, webAppUrl, onboardingEnabled),
+    [apiUrl, client, webAppUrl, onboardingEnabled],
+  )
   const pendingEmail = useWatch({ control: requestCodeForm.control, name: 'email' })
 
   useEffect(() => {
@@ -80,7 +71,8 @@ export function useSignupFlow({
     setNotice('')
 
     try {
-      if (!(await flowClient.verifyEmail(pendingEmail, otp))) {
+      const verifiedDestination = await flowClient.verifyEmail(pendingEmail, otp)
+      if (!verifiedDestination) {
         verificationForm.setError('root.server', {
           type: 'server',
           message: 'That code is invalid or expired. Request a new one and try again.',
@@ -89,7 +81,8 @@ export function useSignupFlow({
       }
 
       flowClient.clearPendingEmail()
-      redirectToLogin()
+      if (onRedirect) onRedirect(verifiedDestination)
+      else window.location.assign(verifiedDestination)
     } catch {
       verificationForm.setError('root.server', {
         type: 'server',
