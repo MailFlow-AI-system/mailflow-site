@@ -1,16 +1,7 @@
 import { Button, Input } from '@mailflow/ui/components'
 import { Eye, EyeOff } from '@mailflow/ui/icons'
-import type { SubmitHandler, UseFormReturn } from 'react-hook-form'
-
-import type { SignupValues } from '../schemas/signupSchema'
-
-type SignupDetailsFormProps = {
-  form: UseFormReturn<SignupValues>
-  onSubmit: SubmitHandler<SignupValues>
-  onRequestExistingAccount: () => void
-  passwordVisible: boolean
-  onTogglePasswordVisibility: () => void
-}
+import type { SignupDetailsFormProps } from '../types/signup'
+import { SignupWorkspaceFields } from './SignupWorkspaceFields'
 
 export function SignupDetailsForm({
   form,
@@ -18,6 +9,8 @@ export function SignupDetailsForm({
   onRequestExistingAccount,
   passwordVisible,
   onTogglePasswordVisibility,
+  onboardingEnabled,
+  webAppUrl,
 }: SignupDetailsFormProps) {
   const {
     formState: { errors, isSubmitting },
@@ -108,6 +101,8 @@ export function SignupDetailsForm({
             </p>
           )}
         </div>
+
+        {onboardingEnabled && <SignupWorkspaceFields form={form} webAppUrl={webAppUrl} />}
 
         {errors.root?.server && (
           <p className="text-sm text-destructive" role="alert">

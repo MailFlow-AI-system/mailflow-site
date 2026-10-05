@@ -9,22 +9,27 @@ import {
   type VerificationRequestValues,
   verificationRequestSchema,
 } from '../schemas/emailVerificationSchema'
-import { type SignupValues, signupSchema } from '../schemas/signupSchema'
+import { createSignupSchema } from '../schemas/signupSchema'
+import type { SignupFormProps, SignupValues } from '../types/signup'
 import { EmailVerificationForm } from './EmailVerificationForm'
 import { SignupDetailsForm } from './SignupDetailsForm'
 import { VerificationRequestForm } from './VerificationRequestForm'
 
-type SignupFormProps = {
-  apiUrl: string
-  webAppUrl: string
-  onRedirect?: (url: string) => void
-}
-
-export default function SignupForm({ apiUrl, webAppUrl, onRedirect }: SignupFormProps) {
+export default function SignupForm({
+  apiUrl,
+  webAppUrl,
+  onRedirect,
+  onboardingEnabled = false,
+}: SignupFormProps) {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const signupForm = useForm<SignupValues>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: { name: '', email: '', password: '' },
+    resolver: zodResolver(createSignupSchema(onboardingEnabled)),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      ...(onboardingEnabled ? { workspaceName: '', workspaceSlug: '' } : {}),
+    },
   })
   const verificationForm = useForm<EmailVerificationValues>({
     resolver: zodResolver(emailVerificationSchema),
@@ -41,6 +46,7 @@ export default function SignupForm({ apiUrl, webAppUrl, onRedirect }: SignupForm
     signupForm,
     verificationForm,
     requestCodeForm,
+    onboardingEnabled,
   })
 
   if (flow.step === 'verify') {
@@ -76,6 +82,8 @@ export default function SignupForm({ apiUrl, webAppUrl, onRedirect }: SignupForm
       onSubmit={flow.submitSignup}
       onTogglePasswordVisibility={() => setPasswordVisible((visible) => !visible)}
       passwordVisible={passwordVisible}
+      onboardingEnabled={onboardingEnabled}
+      webAppUrl={webAppUrl}
     />
   )
 }

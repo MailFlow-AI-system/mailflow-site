@@ -1,42 +1,47 @@
-import type { SignupValues } from '../schemas/signupSchema'
+import { z } from 'zod'
+import type { SignupFlowClient } from '../types/signup'
+import { verifiedLoginUrl } from '../utils/verifiedLoginUrl'
 
 const pendingEmailStorageKey = 'mailflow.signup.pendingEmail'
 
-export type SignupFlowClient = {
-  createAccount(values: SignupValues): Promise<boolean>
-  requestVerificationCode(email: string): Promise<boolean>
-  verifyEmail(email: string, otp: string): Promise<boolean>
-  readPendingEmail(): string
-  savePendingEmail(email: string): void
-  clearPendingEmail(): void
-}
-
-function isVerifiedEmailResponse(payload: unknown) {
-  if (typeof payload !== 'object' || payload === null) return false
-
-  const response = payload as { status?: unknown; user?: unknown }
-  if (typeof response.user !== 'object' || response.user === null) return false
-
-  return (
-    response.status === true &&
-    'emailVerified' in response.user &&
-    response.user.emailVerified === true
-  )
-}
-
-export function createSignupFlowClient(apiUrl: string): SignupFlowClient {
-  const post = (path: string, body: unknown) =>
+export function createSignupFlowClient(
+  apiUrl: string,
+  webAppUrl: string,
+  onboardingEnabled = false,
+): SignupFlowClient {
+  let requestBody = ''
+  let signupKey = ''
+  const post = (path: string, body: unknown, headers: Record<string, string> = {}) =>
     fetch(new URL(path, apiUrl).toString(), {
       method: 'POST',
       credentials: 'omit',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...headers },
       body: JSON.stringify(body),
     })
 
   return {
     async createAccount(values) {
-      const response = await post('/api/auth/sign-up/email', values)
-      return response.ok
+      const serialized = JSON.stringify(values)
+      if (onboardingEnabled && serialized !== requestBody) {
+        requestBody = serialized
+        signupKey = crypto.randomUUID()
+      }
+      const response = await post(
+        onboardingEnabled ? '/api/v1/onboarding/signup' : '/api/auth/sign-up/email',
+        values,
+        onboardingEnabled ? { 'Idempotency-Key': signupKey } : {},
+      )
+      const committed =
+        response.ok &&
+        (!onboardingEnabled ||
+          z
+            .object({ status: z.literal('verification-pending') })
+            .safeParse(await response.json().catch(() => null)).success)
+      if (committed) {
+        requestBody = ''
+        signupKey = ''
+      }
+      return committed
     },
     async requestVerificationCode(email) {
       const response = await post('/api/auth/email-otp/send-verification-otp', {
@@ -48,7 +53,7 @@ export function createSignupFlowClient(apiUrl: string): SignupFlowClient {
     async verifyEmail(email, otp) {
       const response = await post('/api/auth/email-otp/verify-email', { email, otp })
       const payload = response.ok ? await response.json().catch(() => null) : null
-      return response.ok && isVerifiedEmailResponse(payload)
+      return response.ok ? verifiedLoginUrl(payload, webAppUrl, onboardingEnabled) : null
     },
     readPendingEmail() {
       if (typeof window === 'undefined') return ''
