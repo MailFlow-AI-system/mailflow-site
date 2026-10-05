@@ -9,6 +9,11 @@ export default defineConfig({
   output: 'static',
   env: {
     schema: {
+      PUBLIC_WORKSPACE_ONBOARDING_ENABLED: envField.boolean({
+        context: 'client',
+        access: 'public',
+        default: false,
+      }),
       SITE_URL: envField.string({
         context: 'server',
         access: 'public',
