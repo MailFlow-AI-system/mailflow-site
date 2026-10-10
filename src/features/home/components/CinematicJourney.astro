@@ -1,0 +1,192 @@
+---
+import { ArrowDown, Mail, Pencil, Search } from '@mailflow/ui/icons'
+
+import '@/styles/flowPacing.css'
+---
+
+<section
+  id="features"
+  class="flow-journey"
+  data-cinematic-journey
+  aria-label="From scattered messages to a focused workspace"
+>
+  <div class="flow-journey-track" aria-hidden="true"><span data-story-progress></span></div>
+  <div class="flow-story-stage" data-story-stage aria-hidden="true">
+    <div class="flow-stage-grid"></div>
+    <div class="flow-stage-caption">
+      <span>THE SHAPE OF CLARITY</span><span>MAILFLOW / 01</span>
+    </div>
+    <div class="flow-scene-host" data-scene-host>
+      <svg
+        data-scene-fallback
+        class="flow-scene-fallback"
+        viewBox="0 0 800 800"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title>Layered violet surfaces converging around a message</title>
+        <defs>
+          <linearGradient
+            id="flow-ribbon"
+            x1="120"
+            y1="120"
+            x2="660"
+            y2="680"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#a79aff" />
+            <stop offset=".5" stop-color="#7260e8" />
+            <stop offset="1" stop-color="#403078" stop-opacity=".2" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(400 400) rotate(-25)">
+          <rect
+            x="-240"
+            y="-240"
+            width="480"
+            height="480"
+            rx="120"
+            stroke="url(#flow-ribbon)"
+            stroke-width="2"
+          />
+          <rect
+            x="-285"
+            y="-285"
+            width="570"
+            height="570"
+            rx="150"
+            stroke="url(#flow-ribbon)"
+            stroke-opacity=".4"
+          />
+          <rect
+            x="-325"
+            y="-325"
+            width="650"
+            height="650"
+            rx="175"
+            stroke="url(#flow-ribbon)"
+            stroke-opacity=".15"
+          />
+          <path d="M-280 0H280M0-280V280" stroke="url(#flow-ribbon)" stroke-opacity=".14" />
+        </g>
+      </svg>
+    </div>
+    <div class="flow-sheet flow-sheet-back" data-story-sheet data-sheet-index="0">
+      <span class="flow-sheet-icon"><Mail size={18} /></span>
+      <div>
+        <span class="flow-sheet-label">A NEW PERSPECTIVE</span><strong>Ideas worth keeping.</strong>
+        <p>A conversation starts with a little space.</p>
+      </div>
+      <span class="flow-sheet-time">09:41</span>
+    </div>
+    <div class="flow-sheet flow-sheet-middle" data-story-sheet data-sheet-index="1">
+      <span class="flow-sheet-icon"><Search size={18} /></span>
+      <div>
+        <span class="flow-sheet-label">RIGHT WHERE YOU NEED IT</span
+        ><strong>Find the thread.</strong>
+        <p>A name. A phrase. The message you need.</p>
+      </div>
+      <span class="flow-sheet-time">10:02</span>
+    </div>
+    <div class="flow-sheet flow-sheet-front" data-story-sheet data-sheet-index="2">
+      <span class="flow-sheet-icon"><Pencil size={18} /></span>
+      <div>
+        <span class="flow-sheet-label">ROOM TO THINK</span><strong>Your next good idea.</strong>
+        <p>From a blank page to a thoughtful draft.</p>
+      </div>
+      <span class="flow-sheet-time">10:24</span>
+    </div>
+    <div class="flow-story-panel" data-story-reader>
+      <div class="flow-panel-top"><span>INBOX / READING</span><Mail size={16} /></div>
+      <div class="flow-panel-person">
+        <span>AC</span>
+        <div><strong>Avery Chen</strong><small>To you · Today, 09:41</small></div>
+      </div>
+      <h3>A new perspective.</h3>
+      <p>Sometimes the best next step is a little space to think.</p>
+      <p>
+        I've pulled our ideas together. Let's find the thread that matters and take it from there.
+      </p>
+      <div class="flow-panel-foot">One conversation. Your full attention.</div>
+    </div>
+    <div class="flow-story-panel flow-editor-panel" data-story-editor>
+      <div class="flow-panel-top"><span>YOUR NEXT THOUGHT</span><Pencil size={16} /></div>
+      <div class="flow-editor-field"><span>To</span><strong>Avery Chen</strong></div>
+      <div class="flow-editor-field">
+        <span>Subject</span><strong>Re: A new perspective.</strong>
+      </div>
+      <p>I like where this is going.</p>
+      <p>Let's make room for the idea that matters.</p>
+      <span class="flow-editor-caret"></span>
+      <div class="flow-panel-foot">
+        <span class="flow-status"></span>
+        A draft in progress. Nothing sent.
+      </div>
+    </div>
+    <div class="flow-stage-bottom">
+      <span class="flow-status"></span><span>ONE WORKSPACE. A CLEARER PERSPECTIVE.</span>
+    </div>
+  </div>
+  <div class="flow-story-copy">
+    <article class="flow-chapter" data-story-chapter>
+      <p class="flow-eyebrow"><span class="flow-chapter-number">01</span> Bring it into focus</p>
+      <h2>Find your <br><em>focus.</em></h2>
+      <p>
+        A busy inbox doesn't have to fill your head. Browse your messages and search for the
+        conversation that matters.
+      </p>
+      <span class="flow-chapter-detail"
+        ><Search size={16} aria-hidden="true" /> Search by sender, subject, or message</span
+      >
+    </article>
+    <article class="flow-chapter" data-story-chapter>
+      <p class="flow-eyebrow"><span class="flow-chapter-number">02</span> Keep the context</p>
+      <h2>Stay with the <br><em>conversation.</em></h2>
+      <p>
+        Open a message. Give it your attention. Keep the details close while everything else takes a
+        step back.
+      </p>
+      <span class="flow-chapter-detail"
+        ><Mail size={16} aria-hidden="true" />
+        An inbox with space to read</span
+      >
+    </article>
+    <article class="flow-chapter" data-story-chapter>
+      <p class="flow-eyebrow"><span class="flow-chapter-number">03</span> Make your next move</p>
+      <h2>Make room for your <br><em>next thought.</em></h2>
+      <p>
+        Shape a reply in the composer, review the details, and keep a draft in your current tab.
+        Your words, at your pace.
+      </p>
+      <span class="flow-chapter-detail"
+        ><Pencil size={16} aria-hidden="true" />
+        Thoughtful drafts. No rush.</span
+      >
+      <a class="flow-text-link" href="#workspace-preview"
+        >Take a closer look <ArrowDown size={16} aria-hidden="true" /></a
+      >
+    </article>
+  </div>
+</section>
+
+<script>
+const journey = document.querySelector<HTMLElement>('[data-cinematic-journey]')
+if (journey) {
+  // Load the optional engine only when the story enters the viewport.
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return
+      observer.disconnect()
+      void import('../motion/cinematicMotion')
+        .then(({ initCinematicJourney }) => {
+          if (journey.isConnected) initCinematicJourney(journey)
+        })
+        .catch(() => {
+          // The static story and SVG remain usable if the engine cannot load.
+        })
+    },
+    { rootMargin: '-1px 0px' },
+  )
+  observer.observe(journey)
+}
+</script>
