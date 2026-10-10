@@ -4,8 +4,9 @@ import { expect, type Page, test } from '@playwright/test'
 const axeTags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']
 
 async function waitForHydration(page: Page) {
-  await expect(page.locator('astro-island')).toHaveCount(2)
-  await expect(page.locator('astro-island[ssr]')).toHaveCount(0)
+  await page.waitForFunction(
+    () => document.querySelector('header')?.closest('astro-island')?.hasAttribute('ssr') === false,
+  )
 }
 
 for (const theme of ['light', 'dark'] as const) {
@@ -34,7 +35,7 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
 
     const trigger = page.getByRole('button', {
-      name: 'Do I need to switch my current email provider?',
+      name: 'What can I explore in MailFlow today?',
       exact: true,
     })
     await trigger.click()

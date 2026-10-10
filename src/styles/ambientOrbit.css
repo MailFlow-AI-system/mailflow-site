@@ -1,0 +1,229 @@
+.ambient-orbit {
+  --ambient-line: color-mix(in oklch, var(--primary) 34%, transparent);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: clip;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    color-mix(in oklch, var(--primary) 15%, transparent),
+    transparent 72%
+  );
+}
+.ambient-orbit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 46%,
+    color-mix(in oklch, var(--background) 98%, transparent) 12%,
+    color-mix(in oklch, var(--background) 86%, transparent) 29%,
+    color-mix(in oklch, var(--background) 35%, transparent) 48%,
+    transparent 72%
+  );
+}
+.ambient-orbit-space {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(1080px, 112vw);
+  aspect-ratio: 1;
+  transform: translate3d(-50%, -50%, 0);
+  perspective: 1100px;
+}
+.ambient-orbit-system {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-19deg) rotateY(-23deg) rotateZ(-12deg);
+}
+.ambient-orbit-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 91%;
+  height: 91%;
+  border: 2px solid var(--ambient-line);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 22px color-mix(in oklch, var(--primary) 7%, transparent),
+    0 0 18px color-mix(in oklch, var(--primary) 6%, transparent);
+  transform-style: preserve-3d;
+}
+.ambient-orbit-ring-near {
+  transform: translate3d(-50%, -50%, 100px) rotateX(62deg) rotateY(-12deg);
+}
+.ambient-orbit-ring-middle {
+  width: 79%;
+  height: 79%;
+  transform: translate3d(-50%, -50%, -35px) rotateX(47deg) rotateY(37deg);
+}
+.ambient-orbit-ring-far {
+  width: 104%;
+  height: 104%;
+  border-color: color-mix(in oklch, var(--primary) 19%, transparent);
+  transform: translate3d(-50%, -50%, -160px) rotateX(70deg) rotateY(-28deg);
+}
+.ambient-orbit-track {
+  position: absolute;
+  inset: 0;
+}
+.ambient-orbit-satellite {
+  position: absolute;
+  top: -5px;
+  left: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--primary) 75%, var(--background));
+  box-shadow: 0 0 18px color-mix(in oklch, var(--primary) 55%, transparent);
+}
+.ambient-orbit-plane {
+  position: absolute;
+  width: 178px;
+  transform-style: preserve-3d;
+}
+.ambient-orbit-plane-0 {
+  left: 5%;
+  top: 29%;
+  transform: translateZ(140px) rotateY(32deg) rotateZ(-11deg);
+}
+.ambient-orbit-plane-1 {
+  right: 3%;
+  top: 34%;
+  transform: translateZ(60px) rotateY(-31deg) rotateZ(16deg);
+}
+.ambient-orbit-plane-2 {
+  left: 20%;
+  bottom: 20%;
+  width: 134px;
+  transform: translateZ(-120px) rotateX(19deg) rotateY(24deg) rotateZ(12deg);
+}
+.ambient-orbit-plane-3 {
+  right: 19%;
+  top: 15%;
+  width: 144px;
+  transform: translateZ(-190px) rotateX(-17deg) rotateY(-24deg) rotateZ(-14deg);
+}
+.ambient-orbit-message {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 9px;
+  padding: 22px 18px;
+  border: 1px solid color-mix(in oklch, var(--primary) 28%, transparent);
+  border-radius: 15px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--primary) 13%, var(--background)),
+    color-mix(in oklch, var(--primary) 3%, var(--background))
+  );
+  box-shadow: 10px 20px 35px color-mix(in oklch, var(--primary) 9%, transparent);
+}
+.ambient-orbit-message-icon {
+  grid-row: span 3;
+  height: 22px;
+  border: 1px solid var(--ambient-line);
+  border-radius: 5px;
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+}
+.ambient-orbit-message-line {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: color-mix(in oklch, var(--primary) 27%, transparent);
+}
+.ambient-orbit-message-line:last-child {
+  width: 65%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ambient-orbit-system {
+    animation: ambient-depth 18s ease-in-out -4s infinite;
+  }
+  .ambient-orbit-track {
+    animation: ambient-revolve 15s linear -3s infinite;
+  }
+  .ambient-orbit-ring-middle .ambient-orbit-track {
+    animation-duration: 21s;
+    animation-direction: reverse;
+  }
+  .ambient-orbit-ring-far .ambient-orbit-track {
+    animation-duration: 25s;
+    animation-delay: -12s;
+  }
+  .ambient-orbit-message {
+    animation: ambient-drift 8s ease-in-out -2s infinite alternate;
+  }
+  .ambient-orbit-plane-1 .ambient-orbit-message {
+    animation-delay: -6s;
+  }
+  .ambient-orbit-plane-2 .ambient-orbit-message {
+    animation-delay: -4s;
+  }
+  .ambient-orbit :is(.ambient-orbit-system, .ambient-orbit-track, .ambient-orbit-message) {
+    animation-play-state: paused;
+  }
+  .ambient-orbit[data-ambient-active='true']
+    :is(.ambient-orbit-system, .ambient-orbit-track, .ambient-orbit-message) {
+    animation-play-state: running;
+  }
+}
+@keyframes ambient-depth {
+  0%,
+  100% {
+    transform: translateY(-12px) rotateX(-19deg) rotateY(-23deg) rotateZ(-12deg);
+  }
+  50% {
+    transform: translateY(18px) rotateX(13deg) rotateY(23deg) rotateZ(8deg);
+  }
+}
+@keyframes ambient-revolve {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+@keyframes ambient-drift {
+  from {
+    transform: translate3d(0, -12px, -16px) rotateY(-8deg);
+  }
+  to {
+    transform: translate3d(0, 16px, 28px) rotateY(10deg);
+  }
+}
+@media (max-width: 639px) {
+  .ambient-orbit-space {
+    width: 700px;
+    perspective: 1000px;
+  }
+  .ambient-orbit-plane {
+    width: 128px;
+  }
+  .ambient-orbit-plane-0 {
+    left: 20%;
+    top: 19%;
+    transform: translateZ(40px) rotateY(32deg) rotateZ(-11deg);
+  }
+  .ambient-orbit-plane-1 {
+    right: 17%;
+    top: 70%;
+    transform: translateZ(30px) rotateY(-31deg) rotateZ(16deg);
+  }
+  .ambient-orbit-plane-2,
+  .ambient-orbit-plane-3 {
+    display: none;
+  }
+  .ambient-orbit-message {
+    padding: 16px 12px;
+    column-gap: 10px;
+  }
+  .ambient-orbit::after {
+    background: radial-gradient(
+      ellipse at 50% 46%,
+      color-mix(in oklch, var(--background) 98%, transparent) 18%,
+      color-mix(in oklch, var(--background) 88%, transparent) 36%,
+      transparent 76%
+    );
+  }
+}
