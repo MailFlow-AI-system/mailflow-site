@@ -6,10 +6,39 @@ import '@/styles/global.css'
 interface Props {
   title?: string
   description?: string
+  noindex?: boolean
 }
 
 const canonicalUrl = new URL(Astro.url.pathname, siteConfig.url)
-const { title = siteConfig.title, description = siteConfig.description } = Astro.props as Props
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  noindex = false,
+} = Astro.props as Props
+const homeUrl = new URL('/', siteConfig.url).href
+const socialImageUrl = new URL(siteConfig.socialImage.path, siteConfig.url).href
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${homeUrl}#organization`,
+      name: siteConfig.name,
+      url: homeUrl,
+      logo: new URL('/brand/logo.png', siteConfig.url).href,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${homeUrl}#website`,
+      name: siteConfig.name,
+      alternateName: 'MailFlow',
+      url: homeUrl,
+      description: siteConfig.description,
+      inLanguage: 'en',
+      publisher: { '@id': `${homeUrl}#organization` },
+    },
+  ],
+}
 ---
 
 <!doctype html>
@@ -20,7 +49,39 @@ const { title = siteConfig.title, description = siteConfig.description } = Astro
     <meta name="generator" content={Astro.generator}>
     <title>{title}</title>
     <meta name="description" content={description}>
+    <meta name="application-name" content={siteConfig.name}>
+    <meta
+      name="robots"
+      content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}
+    >
+    <meta name="theme-color" content="#080a0e">
     <link rel="canonical" href={canonicalUrl}>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content={siteConfig.name}>
+    <meta property="og:locale" content="en_US">
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:url" content={canonicalUrl}>
+    <meta property="og:image" content={socialImageUrl}>
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content={String(siteConfig.socialImage.width)}>
+    <meta property="og:image:height" content={String(siteConfig.socialImage.height)}>
+    <meta property="og:image:alt" content={siteConfig.socialImage.alt}>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+    <meta name="twitter:image" content={socialImageUrl}>
+    <meta name="twitter:image:alt" content={siteConfig.socialImage.alt}>
+    {Astro.url.pathname === '/' && !noindex && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')}
+        />
+      )}
     <script is:inline data-mailflow-theme set:html={themeScript} />
   </head>
   <body>

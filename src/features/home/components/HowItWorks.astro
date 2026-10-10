@@ -1,24 +1,41 @@
 ---
-import { howItWorksSteps } from '../constants/howItWorksSteps'
+import { ArrowRight } from '@mailflow/ui/icons'
+
+const steps = [
+  {
+    number: '01',
+    title: 'Create your account',
+    text: 'Start with your name, email, and password.',
+  },
+  {
+    number: '02',
+    title: 'Verify your email',
+    text: 'Enter the verification code sent to your inbox.',
+  },
+  {
+    number: '03',
+    title: 'Enter your workspace',
+    text: 'Sign in to explore MailFlow at your own pace.',
+  },
+]
 ---
 
-<section id="how-it-works" class="bg-muted/30 px-4 py-24 md:px-6">
-  <div class="mx-auto max-w-7xl">
-    <div class="mx-auto max-w-2xl text-center">
-      <h2 class="text-3xl font-bold tracking-tight text-foreground md:text-4xl">How it works</h2>
-      <p class="mt-4 text-muted-foreground">
-        Three steps to turn your communication into a growth engine.
-      </p>
-    </div>
-
-    <ol class="mt-14 grid gap-8 md:grid-cols-3">
-      {howItWorksSteps.map((step) => (
-          <li class="relative">
-            <p class="text-5xl font-bold text-primary" aria-hidden="true">{step.number}</p>
-            <h3 class="mt-4 text-xl font-semibold text-foreground">{step.title}</h3>
-            <p class="mt-2 text-sm text-muted-foreground">{step.description}</p>
-          </li>
-        ))}
-    </ol>
+<section id="how-it-works" class="flow-onboarding flow-container" data-section-motion="onboarding">
+  <div class="flow-section-heading" data-onboarding-heading>
+    <p class="flow-eyebrow">A simple beginning</p>
+    <h2>Your next chapter.<br><span>Three small steps.</span></h2>
   </div>
+  <div class="flow-steps" data-onboarding-steps>
+    <span class="flow-step-track" aria-hidden="true"><span data-step-progress></span></span>
+    {steps.map((step, index) => (
+      <article data-onboarding-step={index + 1}>
+        <span class="flow-step-number">{step.number}</span>
+        <h3>{step.title}</h3>
+        <p>{step.text}</p>
+      </article>
+    ))}
+  </div>
+  <a class="flow-text-link" href="/signup"
+    >Get started <ArrowRight size={16} aria-hidden="true" /></a
+  >
 </section>

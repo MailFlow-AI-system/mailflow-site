@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <title>MailFlow AI — Less noise. More flow.</title>
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#8585ff" />
+      <stop offset="1" stop-color="#4f39f6" />
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#8585ff" stop-opacity="0.16" />
+      <stop offset="1" stop-color="#080a0e" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#080a0e" />
+  <ellipse cx="995" cy="285" rx="430" ry="430" fill="url(#glow)" />
+  <g fill="none" stroke="#8585ff" stroke-opacity="0.16">
+    <ellipse cx="965" cy="315" rx="244" ry="194" transform="rotate(-28 965 315)" />
+    <ellipse cx="965" cy="315" rx="194" ry="244" transform="rotate(-28 965 315)" />
+    <circle cx="965" cy="315" r="160" />
+  </g>
+  <rect x="88" y="76" width="64" height="64" rx="16" fill="url(#brand)" />
+  <svg
+    aria-hidden="true"
+    x="104"
+    y="92"
+    width="32"
+    height="32"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#070b14"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"
+    />
+    <path d="M20 2v4" />
+    <path d="M22 4h-4" />
+    <circle cx="4" cy="20" r="2" />
+  </svg>
+  <g font-family="Arial, DejaVu Sans, sans-serif">
+    <text x="173" y="122" fill="#f4f4f8" font-size="36" font-weight="600" letter-spacing="-1">
+      MailFlow AI
+    </text>
+    <text x="88" y="282" fill="#f4f4f8" font-size="86" font-weight="600" letter-spacing="-3">
+      Less noise.
+    </text>
+    <text x="88" y="383" fill="#8585ff" font-size="86" font-weight="600" letter-spacing="-3">
+      More flow.
+    </text>
+    <text x="91" y="476" fill="#b4b5c2" font-size="30">A focused place for your email.</text>
+  </g>
+  <path d="M88 548H1112" stroke="#ffffff" stroke-opacity="0.12" />
+</svg>
