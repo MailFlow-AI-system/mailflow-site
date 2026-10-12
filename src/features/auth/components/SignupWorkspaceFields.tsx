@@ -9,7 +9,7 @@ export function SignupWorkspaceFields({ form, webAppUrl }: SignupWorkspaceFields
   const zone = new URL(webAppUrl).host
   return (
     <fieldset className="grid min-w-0 gap-5">
-      <legend className="mb-3 text-sm font-medium text-foreground">Your workspace</legend>
+      <legend className="sr-only">Your workspace</legend>
       <div className="grid gap-2">
         <label className="text-sm font-medium text-foreground" htmlFor="signup-workspace-name">
           Workspace name

@@ -15,6 +15,14 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+it('keeps the workspace fields labeled without a visible section title', () => {
+  render(<SignupForm apiUrl={apiUrl} webAppUrl={webAppUrl} onboardingEnabled />)
+  const group = screen.getByRole('group', { name: 'Your workspace' })
+  expect(group.querySelector('legend')).toHaveClass('sr-only')
+  expect(screen.getByLabelText('Workspace name')).toBeVisible()
+  expect(screen.getByLabelText('Workspace subdomain')).toBeVisible()
+})
+
 it('requires workspace fields and sends the product contract with an idempotency key', async () => {
   const redirect = vi.fn()
   fetchMock
