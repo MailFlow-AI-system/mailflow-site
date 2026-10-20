@@ -1,0 +1,35 @@
+---
+import '@/styles/ambientOrbit.css'
+---
+
+<div class="ambient-orbit" data-ambient-orbit aria-hidden="true">
+  <div class="ambient-orbit-space">
+    <div class="ambient-orbit-system" data-ambient-depth>
+      <div class="ambient-orbit-ring ambient-orbit-ring-near">
+        <span class="ambient-orbit-track"><span class="ambient-orbit-satellite"></span></span>
+      </div>
+      <div class="ambient-orbit-ring ambient-orbit-ring-middle">
+        <span class="ambient-orbit-track"><span class="ambient-orbit-satellite"></span></span>
+      </div>
+      <div class="ambient-orbit-ring ambient-orbit-ring-far">
+        <span class="ambient-orbit-track"><span class="ambient-orbit-satellite"></span></span>
+      </div>
+      {[0, 1, 2, 3].map((index) => (
+        <div class={`ambient-orbit-plane ambient-orbit-plane-${index}`}>
+          <div class="ambient-orbit-message">
+            <span class="ambient-orbit-message-icon"></span>
+            <span class="ambient-orbit-message-line"></span>
+            <span class="ambient-orbit-message-line"></span>
+            <span class="ambient-orbit-message-line"></span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+import { initAmbientOrbits } from '../motion/ambientOrbit'
+
+initAmbientOrbits()
+</script>

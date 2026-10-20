@@ -9,15 +9,13 @@ import { faqItems } from '../constants/faqItems'
 
 export default function Faq() {
   return (
-    <section className="bg-muted/30 px-4 py-24 md:px-6" id="faq">
+    <section className="flow-faq px-4 py-24 md:px-6" id="faq">
       <div className="mx-auto max-w-3xl">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Frequently asked questions
           </h2>
-          <p className="mt-4 text-muted-foreground">
-            Still have questions? Our team is ready to help.
-          </p>
+          <p className="mt-4 text-muted-foreground">A few details before you begin.</p>
         </div>
 
         <Accordion className="mt-14 gap-3" defaultValue={undefined}>

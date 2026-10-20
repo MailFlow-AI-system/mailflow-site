@@ -1,0 +1,5 @@
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .flow-journey .flow-chapter {
+    min-height: 100svh;
+  }
+}

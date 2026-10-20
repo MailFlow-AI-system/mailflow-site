@@ -2,22 +2,23 @@ import type { FaqItem } from '../types/FaqItem'
 
 export const faqItems: FaqItem[] = [
   {
-    question: 'Do I need to switch my current email provider?',
+    question: 'What can I explore in MailFlow today?',
     answer:
-      'No. You connect your existing Gmail, Outlook, or SMTP accounts and manage everything inside MailFlow AI.',
+      'MailFlow includes an inbox with message search, a message reader, and a composer for preparing drafts. Email sending, scheduling, and AI actions are not available yet.',
   },
   {
-    question: 'Does AI cost extra?',
+    question: 'Is the interactive preview connected to my email?',
     answer:
-      'The AI assistant is included in the Pro and Enterprise plans. On Starter, you get a generous monthly usage allowance.',
+      'No. The preview uses sample messages. Searches and draft text stay in the page; nothing is sent, saved to your account, or connected to your email provider.',
   },
   {
-    question: 'Can I import my contact lists?',
+    question: 'How do I create an account?',
     answer:
-      'Yes. Import via CSV, API, or direct integrations. MailFlow AI automatically detects fields and duplicates.',
+      'Choose Create your account, enter your name, email, and password, then verify your email with the code we send you. After verification, you can sign in to your workspace.',
   },
   {
-    question: 'Is there a long-term contract?',
-    answer: 'No. You can cancel or change plans at any time, with no cancellation fees.',
+    question: 'Where are my drafts kept?',
+    answer:
+      'Drafts in the composer are kept in your current browser tab. They are not sent or saved to a mail server. The illustrative preview on this page resets when you reload it.',
   },
 ]

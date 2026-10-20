@@ -9,7 +9,7 @@ describe('Faq', () => {
     render(<Faq />)
 
     expect(screen.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible()
-    expect(screen.getByText('Still have questions? Our team is ready to help.')).toBeVisible()
+    expect(screen.getByText('A few details before you begin.')).toBeVisible()
 
     const expectControlledPanels = () => {
       for (const { question } of faqItems) {
