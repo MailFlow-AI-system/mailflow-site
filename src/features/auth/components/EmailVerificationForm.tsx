@@ -1,6 +1,7 @@
-import { Button, Input } from '@mailflow/ui/components'
+import { Button, buttonVariants, Input } from '@mailflow/ui/components'
 import { Controller, type SubmitHandler, type UseFormReturn } from 'react-hook-form'
 
+import { signInPath } from '@/shared/config/routes'
 import type { EmailVerificationValues } from '../schemas/emailVerificationSchema'
 
 type EmailVerificationFormProps = {
@@ -12,7 +13,6 @@ type EmailVerificationFormProps = {
   onSubmit: SubmitHandler<EmailVerificationValues>
   onResend: () => void
   onUseDifferentEmail: () => void
-  onSignIn: () => void
 }
 
 export function EmailVerificationForm({
@@ -24,7 +24,6 @@ export function EmailVerificationForm({
   onSubmit,
   onResend,
   onUseDifferentEmail,
-  onSignIn,
 }: EmailVerificationFormProps) {
   const {
     formState: { errors, isSubmitting },
@@ -117,9 +116,9 @@ export function EmailVerificationForm({
         <Button className="w-full" type="button" variant="ghost" onClick={onUseDifferentEmail}>
           Use a different email
         </Button>
-        <Button className="w-full" type="button" variant="ghost" onClick={onSignIn}>
+        <a className={buttonVariants({ variant: 'ghost', className: 'w-full' })} href={signInPath}>
           Already verified? Sign in
-        </Button>
+        </a>
       </div>
     </section>
   )

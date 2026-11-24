@@ -10,7 +10,7 @@ export function SignupDetailsForm({
   passwordVisible,
   onTogglePasswordVisibility,
   onboardingEnabled,
-  webAppUrl,
+  workspaceBaseOrigin,
 }: SignupDetailsFormProps) {
   const {
     formState: { errors, isSubmitting },
@@ -102,7 +102,9 @@ export function SignupDetailsForm({
           )}
         </div>
 
-        {onboardingEnabled && <SignupWorkspaceFields form={form} webAppUrl={webAppUrl} />}
+        {onboardingEnabled && (
+          <SignupWorkspaceFields form={form} workspaceBaseOrigin={workspaceBaseOrigin} />
+        )}
 
         {errors.root?.server && (
           <p className="text-sm text-destructive" role="alert">

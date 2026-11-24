@@ -17,7 +17,7 @@ import { VerificationRequestForm } from './VerificationRequestForm'
 
 export default function SignupForm({
   apiUrl,
-  webAppUrl,
+  workspaceBaseOrigin,
   onRedirect,
   onboardingEnabled = false,
 }: SignupFormProps) {
@@ -41,7 +41,7 @@ export default function SignupForm({
   })
   const flow = useSignupFlow({
     apiUrl,
-    webAppUrl,
+    workspaceBaseOrigin,
     onRedirect,
     signupForm,
     verificationForm,
@@ -57,7 +57,6 @@ export default function SignupForm({
         isSendingCode={requestCodeForm.formState.isSubmitting}
         notice={flow.notice}
         onResend={flow.resendVerificationCode}
-        onSignIn={flow.redirectToLogin}
         onSubmit={flow.submitVerification}
         onUseDifferentEmail={flow.startEmailReentry}
         resendError={requestCodeForm.formState.errors.root?.server?.message}
@@ -83,7 +82,7 @@ export default function SignupForm({
       onTogglePasswordVisibility={() => setPasswordVisible((visible) => !visible)}
       passwordVisible={passwordVisible}
       onboardingEnabled={onboardingEnabled}
-      webAppUrl={webAppUrl}
+      workspaceBaseOrigin={workspaceBaseOrigin}
     />
   )
 }

@@ -11,14 +11,15 @@ export type SignupStep = 'signup' | 'verify' | 'request-code'
 export type SignupFlowClient = {
   createAccount: (values: SignupValues) => Promise<boolean>
   requestVerificationCode: (email: string) => Promise<boolean>
-  verifyEmail: (email: string, otp: string) => Promise<string | null>
+  /** Resolves null when verification fails; `loginUrl` is null when Core gave no trusted URL. */
+  verifyEmail: (email: string, otp: string) => Promise<{ loginUrl: string | null } | null>
   readPendingEmail: () => string
   savePendingEmail: (email: string) => void
   clearPendingEmail: () => void
 }
 export type SignupFormProps = {
   apiUrl: string
-  webAppUrl: string
+  workspaceBaseOrigin: string
   onboardingEnabled?: boolean
   onRedirect?: ((url: string) => void) | undefined
 }
@@ -29,9 +30,12 @@ export type SignupDetailsFormProps = {
   passwordVisible: boolean
   onTogglePasswordVisibility: () => void
   onboardingEnabled: boolean
-  webAppUrl: string
+  workspaceBaseOrigin: string
 }
-export type SignupWorkspaceFieldsProps = { form: UseFormReturn<SignupValues>; webAppUrl: string }
+export type SignupWorkspaceFieldsProps = {
+  form: UseFormReturn<SignupValues>
+  workspaceBaseOrigin: string
+}
 export type UseSignupFlowOptions = SignupFormProps & {
   client?: SignupFlowClient
   signupForm: UseFormReturn<SignupValues>

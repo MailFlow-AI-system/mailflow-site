@@ -41,7 +41,7 @@ export default defineConfig({
         ASTRO_DEV_BACKGROUND: '0',
         SITE_URL: 'http://localhost:4329',
         PUBLIC_API_URL: 'http://127.0.0.1:8082',
-        PUBLIC_WEB_URL: 'http://workspace.test:3001',
+        PUBLIC_WORKSPACE_BASE_ORIGIN: 'http://workspace.test:3001',
         PUBLIC_WORKSPACE_ONBOARDING_ENABLED: 'true',
       },
       url: 'http://localhost:4329',

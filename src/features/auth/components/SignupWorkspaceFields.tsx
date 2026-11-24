@@ -1,12 +1,13 @@
 import { Input } from '@mailflow/ui/components'
+import { workspaceHost } from '@/shared/config/workspaceUrl'
 import type { SignupWorkspaceFieldsProps } from '../types/signup'
 
-export function SignupWorkspaceFields({ form, webAppUrl }: SignupWorkspaceFieldsProps) {
+export function SignupWorkspaceFields({ form, workspaceBaseOrigin }: SignupWorkspaceFieldsProps) {
   const {
     register,
     formState: { errors },
   } = form
-  const zone = new URL(webAppUrl).host
+  const zone = workspaceHost(workspaceBaseOrigin)
   return (
     <fieldset className="grid min-w-0 gap-5">
       <legend className="sr-only">Your workspace</legend>
