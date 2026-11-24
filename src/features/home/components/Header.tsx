@@ -11,6 +11,8 @@ import {
 import { ArrowRight, Menu } from '@mailflow/ui/icons'
 import { useState } from 'react'
 
+import { signInPath, signUpPath } from '@/shared/config/routes'
+
 import Brand from './Brand'
 import NavigationLinks from './NavigationLinks'
 import ThemeSelector from './ThemeSelector'
@@ -27,7 +29,10 @@ export default function Header() {
 
         <div className="hidden items-center gap-3 md:flex">
           <ThemeSelector />
-          <a className={buttonVariants({ size: 'sm' })} href="/signup">
+          <a className={buttonVariants({ size: 'sm', variant: 'ghost' })} href={signInPath}>
+            Sign In
+          </a>
+          <a className={buttonVariants({ size: 'sm' })} href={signUpPath}>
             Sign Up
             <ArrowRight aria-hidden={true} />
           </a>
@@ -57,7 +62,10 @@ export default function Header() {
             />
             <div className="mt-auto flex flex-col gap-3">
               <ThemeSelector side="top" />
-              <a className={buttonVariants()} href="/signup">
+              <a className={buttonVariants({ variant: 'outline' })} href={signInPath}>
+                Sign In
+              </a>
+              <a className={buttonVariants()} href={signUpPath}>
                 Sign Up
                 <ArrowRight aria-hidden={true} />
               </a>

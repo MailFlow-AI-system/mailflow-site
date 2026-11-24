@@ -15,15 +15,27 @@ describe('Header', () => {
     expect(mark?.querySelector('svg')).toHaveClass('text-primary-foreground')
   })
 
-  it('removes Sign In and links Sign Up actions to the signup page', () => {
+  it('links Sign In to the workspace sign-in page and Sign Up to the signup page', () => {
     render(<Header />)
 
-    expect(screen.queryByRole('button', { name: 'Sign In' })).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Sign In' })).toHaveAttribute('href', '/sign-in')
     const signUpLinks = screen.getAllByRole('link', { name: 'Sign Up' })
     expect(signUpLinks.length).toBeGreaterThan(0)
     signUpLinks.forEach((link) => {
       expect(link).toHaveAttribute('href', '/signup')
     })
+  })
+
+  it('offers Sign In in the mobile navigation', () => {
+    render(<Header />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open navigation' }))
+
+    const dialog = screen.getByRole('dialog', { name: 'Mobile navigation' })
+    expect(within(dialog).getByRole('link', { name: 'Sign In' })).toHaveAttribute(
+      'href',
+      '/sign-in',
+    )
   })
 
   it('opens the mobile navigation and closes it with Escape', () => {
