@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useWatch } from 'react-hook-form'
+import { signInPath } from '@/shared/config/routes'
+import { workspaceLoginUrl } from '@/shared/config/workspaceUrl'
 import { createSignupFlowClient } from '../clients/signupFlowClient'
 import type {
   EmailVerificationValues,
@@ -14,7 +16,7 @@ const sendCodeErrorMessage = "We couldn't send a verification code. Try again in
 
 export function useSignupFlow({
   apiUrl,
-  webAppUrl,
+  workspaceBaseOrigin,
   onRedirect,
   client,
   signupForm,
@@ -25,9 +27,11 @@ export function useSignupFlow({
   const [step, setStep] = useState<SignupStep>('signup')
   const [notice, setNotice] = useState('')
   const flowClient = useMemo(
-    () => client ?? createSignupFlowClient(apiUrl, webAppUrl, onboardingEnabled),
-    [apiUrl, client, webAppUrl, onboardingEnabled],
+    () => client ?? createSignupFlowClient(apiUrl, workspaceBaseOrigin, onboardingEnabled),
+    [apiUrl, client, workspaceBaseOrigin, onboardingEnabled],
   )
+  // Kept in memory only: a resumed verification (saved email) has no known workspace.
+  const signupWorkspace = useRef<{ email: string; slug: string } | null>(null)
   const pendingEmail = useWatch({ control: requestCodeForm.control, name: 'email' })
 
   useEffect(() => {
@@ -38,10 +42,16 @@ export function useSignupFlow({
     setStep('verify')
   }, [flowClient, requestCodeForm.setValue])
 
-  const redirectToLogin = () => {
-    const loginUrl = new URL('/login', webAppUrl).toString()
-    if (onRedirect) onRedirect(loginUrl)
-    else window.location.assign(loginUrl)
+  const redirect = (url: string) => {
+    if (onRedirect) onRedirect(url)
+    else window.location.assign(url)
+  }
+
+  const fallbackDestination = (email: string) => {
+    const workspace = signupWorkspace.current
+    const loginUrl =
+      workspace?.email === email ? workspaceLoginUrl(workspaceBaseOrigin, workspace.slug) : null
+    return loginUrl ?? signInPath
   }
 
   const submitSignup = async (values: SignupValues) => {
@@ -54,6 +64,9 @@ export function useSignupFlow({
         return
       }
 
+      signupWorkspace.current = values.workspaceSlug
+        ? { email: values.email, slug: values.workspaceSlug }
+        : null
       signupForm.reset()
       requestCodeForm.clearErrors()
       requestCodeForm.setValue('email', values.email)
@@ -71,8 +84,8 @@ export function useSignupFlow({
     setNotice('')
 
     try {
-      const verifiedDestination = await flowClient.verifyEmail(pendingEmail, otp)
-      if (!verifiedDestination) {
+      const verification = await flowClient.verifyEmail(pendingEmail, otp)
+      if (!verification) {
         verificationForm.setError('root.server', {
           type: 'server',
           message: 'That code is invalid or expired. Request a new one and try again.',
@@ -81,8 +94,7 @@ export function useSignupFlow({
       }
 
       flowClient.clearPendingEmail()
-      if (onRedirect) onRedirect(verifiedDestination)
-      else window.location.assign(verifiedDestination)
+      redirect(verification.loginUrl ?? fallbackDestination(pendingEmail))
     } catch {
       verificationForm.setError('root.server', {
         type: 'server',
@@ -146,7 +158,6 @@ export function useSignupFlow({
     backToSignup,
     notice,
     pendingEmail,
-    redirectToLogin,
     resendVerificationCode,
     startEmailReentry,
     step,

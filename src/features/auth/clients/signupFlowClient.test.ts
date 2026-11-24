@@ -10,11 +10,7 @@ it('reuses the request key after a lost response and creates another key only fo
     .mockRejectedValueOnce(new Error('response lost'))
     .mockResolvedValue(Response.json({ status: 'verification-pending' }, { status: 202 }))
   vi.stubGlobal('fetch', fetcher)
-  const client = createSignupFlowClient(
-    'https://api.example.test',
-    'https://web.example.test',
-    true,
-  )
+  const client = createSignupFlowClient('https://api.example.test', 'https://example.test', true)
   const input = {
     name: 'Maya',
     email: 'maya@example.test',
