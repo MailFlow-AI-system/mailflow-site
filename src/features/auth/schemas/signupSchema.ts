@@ -1,4 +1,15 @@
 import { z } from 'zod'
+import { workspaceSlugMaxLength, workspaceSlugPattern } from '@/shared/config/workspaceUrl'
+
+export function workspaceSlugField(requiredMessage: string) {
+  return z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(1, requiredMessage)
+    .max(workspaceSlugMaxLength, 'Use 63 characters or fewer.')
+    .regex(workspaceSlugPattern, 'Use letters, numbers and single hyphens.')
+}
 
 export const signupSchema = z.object({
   name: z.string().trim().min(1, 'Enter your name.').max(120),
@@ -20,13 +31,7 @@ export function createSignupSchema(onboardingEnabled: boolean) {
   return onboardingEnabled
     ? signupSchema.extend({
         workspaceName: z.string().trim().min(1, 'Enter your workspace name.').max(120),
-        workspaceSlug: z
-          .string()
-          .trim()
-          .toLowerCase()
-          .min(1, 'Choose a workspace subdomain.')
-          .max(63)
-          .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use letters, numbers and single hyphens.'),
+        workspaceSlug: workspaceSlugField('Choose a workspace subdomain.'),
       })
     : signupSchema
 }

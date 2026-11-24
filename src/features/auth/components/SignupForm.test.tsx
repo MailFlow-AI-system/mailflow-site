@@ -5,7 +5,7 @@ import SignupForm from './SignupForm'
 
 const props = {
   apiUrl: 'https://api.mailflow.example.test',
-  webAppUrl: 'https://web.mailflow.example.test',
+  workspaceBaseOrigin: 'https://mailflow.example.test',
 }
 
 function fillSignupForm() {
@@ -82,7 +82,7 @@ describe('SignupForm', () => {
     )
   })
 
-  it('verifies the email without cookies and redirects to Web login only after confirmation', async () => {
+  it('verifies the email without cookies and sends users without a known workspace to site sign-in only after confirmation', async () => {
     fetchMock
       .mockResolvedValueOnce(new Response(null, { status: 200 }))
       .mockResolvedValueOnce(
@@ -97,7 +97,7 @@ describe('SignupForm', () => {
     fireEvent.change(code, { target: { value: '123456' } })
     fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
 
-    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith(`${props.webAppUrl}/login`))
+    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith('/sign-in'))
     expect(fetchMock).toHaveBeenLastCalledWith(
       `${props.apiUrl}/api/auth/email-otp/verify-email`,
       expect.objectContaining({
@@ -356,12 +356,22 @@ describe('SignupForm', () => {
     fireEvent.change(code, { target: { value: '123456' } })
     fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
 
-    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith(`${props.webAppUrl}/login`))
+    await waitFor(() => expect(onRedirect).toHaveBeenCalledWith('/sign-in'))
     expect(fetchMock).toHaveBeenCalledWith(
       `${props.apiUrl}/api/auth/email-otp/verify-email`,
       expect.objectContaining({
         body: JSON.stringify({ email: 'maya@example.com', otp: '123456' }),
       }),
+    )
+  })
+
+  it('links already verified users to the site sign-in page', async () => {
+    window.sessionStorage.setItem('mailflow.signup.pendingEmail', 'maya@example.com')
+    render(<SignupForm {...props} />)
+
+    expect(await screen.findByRole('link', { name: 'Already verified? Sign in' })).toHaveAttribute(
+      'href',
+      '/sign-in',
     )
   })
 

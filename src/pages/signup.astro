@@ -1,7 +1,7 @@
 ---
 import {
   PUBLIC_API_URL,
-  PUBLIC_WEB_URL,
+  PUBLIC_WORKSPACE_BASE_ORIGIN,
   PUBLIC_WORKSPACE_ONBOARDING_ENABLED,
 } from 'astro:env/client'
 import SignupForm from '@/features/auth/components/SignupForm'
@@ -43,7 +43,7 @@ import SiteLayout from '@/layouts/SiteLayout.astro'
         <SignupForm
           client:load
           apiUrl={PUBLIC_API_URL}
-          webAppUrl={PUBLIC_WEB_URL}
+          workspaceBaseOrigin={PUBLIC_WORKSPACE_BASE_ORIGIN}
           onboardingEnabled={PUBLIC_WORKSPACE_ONBOARDING_ENABLED}
         />
       </div>
