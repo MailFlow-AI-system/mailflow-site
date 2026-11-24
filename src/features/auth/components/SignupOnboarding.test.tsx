@@ -3,7 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import SignupForm from './SignupForm'
 
 const apiUrl = 'https://api.mailflow.example.test'
-const webAppUrl = 'https://web.mailflow.example.test'
+const workspaceBaseOrigin = 'https://mailflow.example.test'
 const fetchMock = vi.fn()
 beforeEach(() => {
   fetchMock.mockReset()
@@ -16,7 +16,7 @@ afterEach(() => {
 })
 
 it('keeps the workspace fields labeled without a visible section title', () => {
-  render(<SignupForm apiUrl={apiUrl} webAppUrl={webAppUrl} onboardingEnabled />)
+  render(<SignupForm apiUrl={apiUrl} workspaceBaseOrigin={workspaceBaseOrigin} onboardingEnabled />)
   const group = screen.getByRole('group', { name: 'Your workspace' })
   expect(group.querySelector('legend')).toHaveClass('sr-only')
   expect(screen.getByLabelText('Workspace name')).toBeVisible()
@@ -32,11 +32,16 @@ it('requires workspace fields and sends the product contract with an idempotency
         status: true,
         token: null,
         user: { emailVerified: true },
-        loginUrl: 'https://maya-team.web.mailflow.example.test/login',
+        loginUrl: 'https://maya-team.mailflow.example.test/login',
       }),
     )
   render(
-    <SignupForm apiUrl={apiUrl} webAppUrl={webAppUrl} onboardingEnabled onRedirect={redirect} />,
+    <SignupForm
+      apiUrl={apiUrl}
+      workspaceBaseOrigin={workspaceBaseOrigin}
+      onboardingEnabled
+      onRedirect={redirect}
+    />,
   )
   fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
   expect(await screen.findByText('Enter your workspace name.')).toBeVisible()
@@ -70,6 +75,58 @@ it('requires workspace fields and sends the product contract with an idempotency
   fireEvent.change(screen.getByLabelText('6-digit code'), { target: { value: '123456' } })
   fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
   await waitFor(() =>
-    expect(redirect).toHaveBeenCalledWith('https://maya-team.web.mailflow.example.test/login'),
+    expect(redirect).toHaveBeenCalledWith('https://maya-team.mailflow.example.test/login'),
   )
+})
+
+async function signUpAndVerify(verifyPayload: Record<string, unknown>) {
+  const redirect = vi.fn()
+  fetchMock
+    .mockResolvedValueOnce(Response.json({ status: 'verification-pending' }, { status: 202 }))
+    .mockResolvedValueOnce(Response.json(verifyPayload))
+  render(
+    <SignupForm
+      apiUrl={apiUrl}
+      workspaceBaseOrigin={workspaceBaseOrigin}
+      onboardingEnabled
+      onRedirect={redirect}
+    />,
+  )
+  fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Maya' } })
+  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'maya@example.com' } })
+  fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'synthetic-password' } })
+  fireEvent.change(screen.getByLabelText('Workspace name'), { target: { value: 'Maya Team' } })
+  fireEvent.change(screen.getByLabelText('Workspace subdomain'), {
+    target: { value: 'maya-team' },
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'Create account' }))
+  fireEvent.change(await screen.findByLabelText('6-digit code'), { target: { value: '123456' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Verify email' }))
+  return redirect
+}
+
+const verifiedPayload = { status: true, token: null, user: { emailVerified: true } }
+
+it('falls back to the entered workspace subdomain when Core returns no login URL', async () => {
+  const redirect = await signUpAndVerify(verifiedPayload)
+  await waitFor(() =>
+    expect(redirect).toHaveBeenCalledWith('https://maya-team.mailflow.example.test/login'),
+  )
+})
+
+it.each(['https://mailflow.example.test/login', 'https://evil.test/login'])(
+  'ignores the untrusted Core login URL %s and uses the entered workspace subdomain',
+  async (loginUrl) => {
+    const redirect = await signUpAndVerify({ ...verifiedPayload, loginUrl })
+    await waitFor(() =>
+      expect(redirect).toHaveBeenCalledWith('https://maya-team.mailflow.example.test/login'),
+    )
+  },
+)
+
+it('shows the workspace address under the configured base host', () => {
+  render(
+    <SignupForm apiUrl={apiUrl} workspaceBaseOrigin="http://localhost:3000" onboardingEnabled />,
+  )
+  expect(screen.getByText(/your-subdomain\.localhost:3000/)).toBeVisible()
 })

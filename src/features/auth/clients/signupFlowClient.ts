@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import type { SignupFlowClient } from '../types/signup'
-import { verifiedLoginUrl } from '../utils/verifiedLoginUrl'
+import { isVerifiedResponse, verifiedLoginUrl } from '../utils/verifiedLoginUrl'
 
 const pendingEmailStorageKey = 'mailflow.signup.pendingEmail'
 
 export function createSignupFlowClient(
   apiUrl: string,
-  webAppUrl: string,
+  workspaceBaseOrigin: string,
   onboardingEnabled = false,
 ): SignupFlowClient {
   let requestBody = ''
@@ -52,8 +52,10 @@ export function createSignupFlowClient(
     },
     async verifyEmail(email, otp) {
       const response = await post('/api/auth/email-otp/verify-email', { email, otp })
-      const payload = response.ok ? await response.json().catch(() => null) : null
-      return response.ok ? verifiedLoginUrl(payload, webAppUrl, onboardingEnabled) : null
+      if (!response.ok) return null
+      const payload = await response.json().catch(() => null)
+      if (!isVerifiedResponse(payload)) return null
+      return { loginUrl: verifiedLoginUrl(payload, workspaceBaseOrigin) }
     },
     readPendingEmail() {
       if (typeof window === 'undefined') return ''

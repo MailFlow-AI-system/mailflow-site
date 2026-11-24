@@ -27,7 +27,7 @@ export default defineConfig({
       ASTRO_PREVIEW_BACKGROUND: '0',
       SITE_URL: 'https://mailflow.example.test',
       PUBLIC_API_URL: 'http://localhost:8080',
-      PUBLIC_WEB_URL: 'http://localhost:3000',
+      PUBLIC_WORKSPACE_BASE_ORIGIN: 'http://localhost:3000',
     },
     url: 'http://127.0.0.1:4328',
     reuseExistingServer: !process.env.CI,

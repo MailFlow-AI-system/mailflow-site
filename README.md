@@ -55,18 +55,18 @@ The site is available at `http://localhost:4321`.
 | `bun run check:deploy` | Validate development, staging, and production Worker bundles without deploying |
 | `bun run check` | Run lint, format, typecheck, unit tests, static build, and Worker dry-runs |
 
-`SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WEB_URL` are required to build the site. Configure these public values in the Infisical `/mailflow-site` path or `.env`:
+`SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WORKSPACE_BASE_ORIGIN` are required to build the site. Configure these public values in the Infisical `/mailflow-site` path or `.env`:
 
 ```bash
 SITE_URL=http://localhost:4321
 PUBLIC_API_URL=http://localhost:8080
-PUBLIC_WEB_URL=http://localhost:3000
+PUBLIC_WORKSPACE_BASE_ORIGIN=http://localhost:3000
 ```
 
 For reproducible CI validation, use reserved example domains; CI does not call these endpoints:
 
 ```bash
-SITE_URL=https://mailflow.example.test PUBLIC_API_URL=https://api.mailflow.example.test PUBLIC_WEB_URL=https://web.mailflow.example.test bun run check
+SITE_URL=https://mailflow.example.test PUBLIC_API_URL=https://api.mailflow.example.test PUBLIC_WORKSPACE_BASE_ORIGIN=https://mailflow.example.test bun run check
 bun run test:e2e
 bunx playwright test e2e/accessibility.spec.ts
 ```
@@ -79,11 +79,18 @@ bunx playwright install --with-deps chromium
 
 ## Environment and security
 
-Infisical is the configuration-delivery boundary for local development. Configure `SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WEB_URL` in the `/mailflow-site` path. The `.infisical.json` file contains project-link metadata only and is safe to commit.
+Infisical is the configuration-delivery boundary for local development. Configure `SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WORKSPACE_BASE_ORIGIN` in the `/mailflow-site` path. The `.infisical.json` file contains project-link metadata only and is safe to commit.
 
-`SITE_URL` builds canonical URLs. `PUBLIC_API_URL` selects the public Core API endpoint and `PUBLIC_WEB_URL` selects the Web app destination after signup; these are public URLs and contain no credentials. Their local values are documented in `.env.example`; `.env` is ignored and must not be committed. Never place passwords, API keys, tokens, or other secrets in public environment variables, source files, fixtures, browser tests, or logs.
+`SITE_URL` builds canonical URLs. `PUBLIC_API_URL` selects the public Core API endpoint. `PUBLIC_WORKSPACE_BASE_ORIGIN` is the exact origin under which each workspace runs the Web app on its own subdomain: a workspace URL is `{protocol}//{slug}.{base hostname}[:port]/login`. There is no generic Web app host. These are public URLs and contain no credentials. Their local values are documented in `.env.example`; `.env` is ignored and must not be committed. Never place passwords, API keys, tokens, or other secrets in public environment variables, source files, fixtures, browser tests, or logs.
 
-Local development uses `http://localhost` on separate ports for Site, Core, and Web so the browser can share the host-only auth cookie after login. Signup posts directly to Core without sending or accepting cookies and uses an email OTP for verification.
+| Environment | Landing | `PUBLIC_WORKSPACE_BASE_ORIGIN` | Workspace |
+| --- | --- | --- | --- |
+| Production | `https://mailflow-ai.online` | `https://mailflow-ai.online` | `https://{slug}.mailflow-ai.online` |
+| Staging | `https://site-staging.mailflow-ai.online` | `https://staging.mailflow-ai.online` | `https://{slug}.staging.mailflow-ai.online` |
+| Development | `https://site-dev.mailflow-ai.online` | `https://dev.mailflow-ai.online` | `https://{slug}.dev.mailflow-ai.online` |
+| Local | `http://localhost:4321` | `http://localhost:3000` | `http://{slug}.localhost:3000` |
+
+Signup posts directly to Core without sending or accepting cookies and uses an email OTP for verification. After verification the site redirects to Core's `loginUrl` only when it is exactly `/login` on a single workspace subdomain of `PUBLIC_WORKSPACE_BASE_ORIGIN`; otherwise it uses the subdomain entered during signup, or `/sign-in` when no workspace is known (for example, after resuming verification from a saved email). `/sign-in` asks for the workspace subdomain and sends the user to that workspace's login page.
 
 ## Deployment
 
@@ -97,7 +104,7 @@ existing Workers:
 
 Cloudflare Workers Builds owns deployment triggers for `development`, `staging`,
 and `main`. GitHub Actions validates changes but does not deploy them. Configure
-`SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WEB_URL` in each Cloudflare build environment after the final domains are set.
+`SITE_URL`, `PUBLIC_API_URL`, and `PUBLIC_WORKSPACE_BASE_ORIGIN` in each Cloudflare build environment after the final domains are set.
 
 ## Architecture
 

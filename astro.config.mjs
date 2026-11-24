@@ -24,7 +24,7 @@ export default defineConfig({
         access: 'public',
         url: true,
       }),
-      PUBLIC_WEB_URL: envField.string({
+      PUBLIC_WORKSPACE_BASE_ORIGIN: envField.string({
         context: 'client',
         access: 'public',
         url: true,
