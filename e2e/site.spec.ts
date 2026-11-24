@@ -121,6 +121,7 @@ test('serves crawlable brand assets and a landing-only sitemap', async ({ page, 
   expect(sitemap.headers()['content-type']).toContain('xml')
   expect(await sitemap.text()).toContain('<loc>https://mailflow.example.test/</loc>')
   expect(await sitemap.text()).not.toContain('signup')
+  expect(await sitemap.text()).not.toContain('sign-in')
 
   await page.goto('/')
   await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute(
